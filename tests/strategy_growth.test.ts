@@ -13,7 +13,10 @@ const CONFIRMED: Record<string, Record<string, number>> = {
   baiyi_dujiang: { strategy_damage: 2.25 },
   jiangqing_zhizhu: { strategy_damage: 0.625 },
   huoshi_fengwei: { strategy_damage: 0.95, ignite: 2.45 },
-  mimou_dingshu: { curse: 1.225, panic: 1.125 },
+  /** ⚠️ 2026-10 反推修正：panic 1.125（旧调研值）→ **1.5**
+   *  依据 = 客户端效果表「成长率系数 300 ÷ 200 = 1.5」，与官方文案
+   *  「伤害率 143%（受谋略）」的隐含值逐位吻合；同战法诅咒段 1.225 亦逐位吻合。 */
+  mimou_dingshu: { curse: 1.225, panic: 1.5 },
   shichou: { strategy_damage: 2.1 },
   fushi_yehuo: { strategy_damage: 0.95, burning: 0.95 },
   weiji_nanyan: { sorcery: 1.075 },
@@ -151,13 +154,13 @@ describe('已确认伤害率/增减伤成长率', () => {
     }
   });
 
-  it('密谋定蜀恐慌维持官方现行 143%（大明州旧版 115% 不用），成长率 1.125', () => {
+  it('密谋定蜀恐慌维持官方现行 143%（大明州旧版 115% 不用），成长率 1.5（2026-10 按成长率系数修正，旧调研值 1.125）', () => {
     const skill = SKILL_REGISTRY.mimou_dingshu;
     const panic = collectOutputs(skill)
       .flatMap((o) => (o.kind === 'inflict_status' ? statusList(o.status) : []))
       .find((st) => st.type === 'panic');
     expect(panic).toBeTruthy();
     expect(panic!.rate).toBe(143);
-    expect(panic!.growthRate).toBe(1.125);
+    expect(panic!.growthRate).toBe(1.5);
   });
 });

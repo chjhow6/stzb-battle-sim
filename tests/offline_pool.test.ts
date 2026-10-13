@@ -75,9 +75,9 @@ beforeEach(() => {
 
 describe('配将池「显示下架武将」开关', () => {
   it('默认只显示上架武将，下架将不进池', () => {
-    // 基线口径：上架 91（曹彰 五兵之烈 成长率实测锁定后上线 90 → 91）/ 下架 ≥37（全量 161，已挂主战法 = 上架 + 下架）
-    expect(HEROES.length).toBe(91);
-    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(37);
+    // 基线口径（2026-10-13 摘牌后）：上架 104（本批从 OFFLINE_MAIN_SKILLS 摘掉 10 条战法 → 对应武将回池）
+    expect(HEROES.length).toBe(104);
+    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(25);
     expect(SLOTTED_HEROES.length).toBe(HEROES.length + OFFLINE_HEROES.length);
     expect(cards(ctx.pool).length).toBe(HEROES.length);
     // 本批新增的 7 将里，只有甘宁（侵掠如火）/吕姬（缚父临危）上架

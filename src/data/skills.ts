@@ -629,10 +629,10 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage_reduce', 'panic', 'curse', 'damage_boost'],
     output: [
-      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.3, duration: 2, strategyScaled: true, growthRate: 0.13 } },
-      { kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 143, growthRate: 1.125 } },
+      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.3, duration: 2, strategyScaled: true, growthRate: 0.25 } },
+      { kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 143, growthRate: 1.5 } },
       { kind: 'inflict_status', status: { type: 'curse', duration: 2, rate: 133, growthRate: 1.225 } },
-      { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.05, duration: 999, direction: 'caused', strategyScaled: true, growthRate: 0.15, stack: true }, targetSide: 'self' },
+      { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.05, duration: 999, direction: 'caused', strategyScaled: true, growthRate: 0.05, stack: true }, targetSide: 'self' },
     ],
   },
   /** 火势风威（陆逊主战法，S2）：1 回合准备，敌军全体策略攻击 111%（受谋略，成长率 0.95/点）+ 引燃标记 221%（受谋略，成长率 2.45/点：
@@ -1084,6 +1084,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           direction: 'caused',
           stacks: 1,
           strategyScaled: true,
+          growthRate: 0.025,
         },
       },
     ],
@@ -1112,11 +1113,11 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'burning', 'heal', 'rest'],
     output: [
       // ① 敌军群体策略攻击 176%（受谋略，成长率未确认 → 留空）
-      { kind: 'strategy_damage', rate: 176, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 176, strategyScaled: true, growthRate: 1.95 },
       // ② 燃烧状态（1 回合）：兵力高于初始 50% 时才跳伤 86%（受谋略，成长率留空）
       {
         kind: 'inflict_status',
-        status: { type: 'burning', duration: 1, rate: 86, growthRate: 0, troopRatio: { above: 50 } },
+        status: { type: 'burning', duration: 1, rate: 86, growthRate: 0.825, troopRatio: { above: 50 } },
       },
       // ③ 我军群体恢复 161%（受谋略，成长率留空）
       {
@@ -1134,7 +1135,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         targetSide: 'ally',
         targetMode: 'group',
         groupCount: 2,
-        status: { type: 'rest', duration: 1, rate: 82, growthRate: 0, strategyScaled: true, troopRatio: { below: 50 } },
+        status: { type: 'rest', duration: 1, rate: 82, growthRate: 0.65, strategyScaled: true, troopRatio: { below: 50 } },
       },
     ],
   },
@@ -1281,7 +1282,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     priorityRounds: 3,
     retainAfterDeath: true,
     tags: ['damage_boost'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.26, duration: 3, direction: 'caused' } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.26, duration: 3, direction: 'caused', strategyScaled: true, growthRate: 0.2 } }],
   },
   /** 汉韵旷野（王昭君主战法·一类指挥）：战斗开始后，使敌军全体进行攻击或策略攻击时，有 40% 几率使伤害降低 30%（受谋略影响）。每回合王昭君行动时几率 +3%（叠加率暂未建模，取基值 40%） */
   hanyun_kuangye: {
@@ -1417,7 +1418,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage', 'burning', 'damage_boost'],
     output: [
-      { kind: 'grant_damage_boost', rate: 16, growthRate: 0.1, duration: 2 },
+      { kind: 'grant_damage_boost', rate: 16, growthRate: 0.075, duration: 2 },
       { kind: 'strategy_damage', rate: 114, strategyScaled: true, growthRate: 0.95 },
       { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 114, growthRate: 0.95 } },
     ],
@@ -1459,26 +1460,26 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
 
   // ─── 新机制示例战法（v0.7）───
 
-  /** 洞察（C 主动·示例）：使自身进入洞察状态，免疫混乱/犹豫/怯战/暴走，持续 2 回合 */
+  /** 洞察（C 主动·示例·发动率满级 35%）：使自身进入洞察状态，免疫混乱/犹豫/怯战/暴走，持续 2 回合 */
   insight_skill: {
     id: 'insight_skill',
     name: '洞察',
     type: 'active',
     prepare: false,
     range: 1,
-    triggerRate: 0.30,
+    triggerRate: 0.35,
     targetMode: 'self',
     tags: ['insight'],
     output: [{ kind: 'inflict_status', status: { type: 'insight', duration: 2 }, target: 'self' }],
   },
-  /** 了如指掌（C 主动）：移除敌军群体的有益效果，并使其无法恢复兵力，持续 1 回合 */
+  /** 了如指掌（C 主动·发动率满级 35%）：移除敌军群体的有益效果，并使其无法恢复兵力，持续 1 回合 */
   liaoru_zhizhang: {
     id: 'liaoru_zhizhang',
     name: '了如指掌',
     type: 'active',
     prepare: false,
     range: 4,
-    triggerRate: 0.30,
+    triggerRate: 0.35,
     targetMode: 'group',
     targetSide: 'enemy',
     tags: ['siege'],
@@ -1543,7 +1544,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'group',
     targetSide: 'enemy',
     tags: ['sorcery'],
-    output: [{ kind: 'inflict_status', status: { type: 'sorcery', duration: 2, rate: 116, growthRate: 1.0 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'sorcery', duration: 2, rate: 116, growthRate: 1.15 } }],
   },
 
   // ─── 批量 7（v0.9）───
@@ -1654,7 +1655,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'all',
     targetSide: 'enemy',
     tags: ['sorcery'],
-    output: [{ kind: 'inflict_status', status: { type: 'sorcery', duration: 2, rate: 180, growthRate: 1.0 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'sorcery', duration: 2, rate: 180, growthRate: 1.75 } }],
   },
 
   // ─── 批量 8（v0.10）───
@@ -1724,7 +1725,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['immunity', 'heal'],
     output: [
       { kind: 'remove_debuffs' },
-      { kind: 'heal', rate: 168, strategyScaled: true, growthRate: 1.0 },
+      { kind: 'heal', rate: 168, strategyScaled: true, growthRate: 1.75 },
     ],
   },
   /** 险途暗渡（邓艾主战法·主动）：对敌军群体发动一次攻击（伤害率 160%），并使其陷入动摇状态，每回合产生逃兵（恐慌 DoT，伤害率 80%），持续 1 回合。士气降低/提升分支暂未建模 */
@@ -1798,23 +1799,23 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       { kind: 'inflict_status', status: { type: 'defense_buff', amount: -25, duration: 2 } },
     ],
   },
-  /** 攻其要害（C 追击）：普攻后对攻击目标再次攻击 125% */
+  /** 攻其要害（C 追击·发动率满级 35%）：普攻后对攻击目标再次攻击 125% */
   gongqi_yaohai: {
     id: 'gongqi_yaohai',
     name: '攻其要害',
     type: 'pursuit',
     range: 0,
-    triggerRate: 0.28,
+    triggerRate: 0.35,
     tags: ['damage'],
     output: [{ kind: 'physical_damage', rate: 125 }],
   },
-  /** 追击（C 追击）：普攻后对攻击目标再次攻击 50% */
+  /** 追击（C 追击·发动率满级 50%，官方 25%–50%）：普攻后对攻击目标再次攻击 50% */
   zhuiji: {
     id: 'zhuiji',
     name: '追击',
     type: 'pursuit',
     range: 0,
-    triggerRate: 0.6,
+    triggerRate: 0.5,
     tags: ['damage'],
     output: [{ kind: 'physical_damage', rate: 50 }],
   },
@@ -1826,7 +1827,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     range: 0,
     triggerRate: 0.3,
     tags: ['damage'],
-    output: [{ kind: 'strategy_damage', rate: 121, strategyScaled: true, growthRate: 0.7 }],
+    output: [{ kind: 'strategy_damage', rate: 121, strategyScaled: true, growthRate: 1.2 }],
   },
   /** 浴血（D 追击）：普攻后使攻击目标陷入动摇（恐慌 DoT，伤害率 75%），持续 2 回合 */
   yuxue: {
@@ -2212,7 +2213,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage'],
     output: [
       { kind: 'physical_damage', rate: 180, targetMode: 'random_single' },
-      { kind: 'strategy_damage', rate: 143, strategyScaled: true, growthRate: 1.0, targetMode: 'random_single' },
+      { kind: 'strategy_damage', rate: 143, strategyScaled: true, growthRate: 1.475, targetMode: 'random_single' },
     ],
   },
   /** 敛众定气（A 主动）：移除我军全体的有害效果，立即恢复一定兵力（85%）。50% 几率免疫围困未建模 */
@@ -2228,7 +2229,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['immunity', 'heal'],
     output: [
       { kind: 'remove_debuffs' },
-      { kind: 'heal', rate: 85, strategyScaled: true, growthRate: 0.7 },
+      { kind: 'heal', rate: 85, strategyScaled: true, growthRate: 0.75 },
     ],
   },
   /** 筹策绝道（A 主动）：1 回合准备，对敌军群体发动一次策略攻击 250%，并使其谋略、速度属性下降 25，持续 2 回合 */
@@ -2242,7 +2243,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'group',
     tags: ['damage', 'debuff_strategy', 'debuff_speed'],
     output: [
-      { kind: 'strategy_damage', rate: 250, strategyScaled: true, growthRate: 1.0 },
+      { kind: 'strategy_damage', rate: 250, strategyScaled: true, growthRate: 2.5 },
       { kind: 'inflict_status', status: { type: 'strategy_buff', amount: -25, duration: 2 } },
       { kind: 'inflict_status', status: { type: 'speed_buff', amount: -25, duration: 2 } },
     ],
@@ -2305,7 +2306,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['panic', 'damage_boost'],
     output: [
       { kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 130, growthRate: 1.3 } },
-      { kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'strategy', rate: 0.12, duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'strategy', rate: 0.12, duration: 2, strategyScaled: true, growthRate: 0.075 } },
     ],
   },
   /** 危崖困军（B 主动）：1 回合准备，对敌军群体发动一次强力策略攻击 210%，并使其防御属性降低 7.2，持续 2 回合 */
@@ -2323,14 +2324,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       { kind: 'inflict_status', status: { type: 'defense_buff', amount: -7.2, duration: 2 } },
     ],
   },
-  /** 叫阵（B 主动）：挑衅敌军单体使其攻击自身，同时自身防御属性提高 80，谋略属性提高 40，持续 2 回合 */
+  /** 叫阵（B 主动·发动率满级 40%）：挑衅敌军单体使其攻击自身，同时自身防御属性提高 80，谋略属性提高 40，持续 2 回合 */
   jiaozhen: {
     id: 'jiaozhen',
     name: '叫阵',
     type: 'active',
     prepare: false,
     range: 4,
-    triggerRate: 0.3,
+    triggerRate: 0.4,
     targetMode: 'random_single',
     targetSide: 'enemy',
     tags: ['taunt', 'buff_defense', 'buff_strategy'],
@@ -2365,14 +2366,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage'],
     output: [{ kind: 'strategy_damage', rate: 231, strategyScaled: true, growthRate: 2.45 }],
   },
-  /** 安抚军心（B 主动）：移除我军群体的有害效果，并立即恢复其一定兵力（恢复率 108%，成长率 0.975/点） */
+  /** 安抚军心（B 主动·发动率满级 35%）：移除我军群体的有害效果，并立即恢复其一定兵力（恢复率 108%，成长率 0.975/点） */
   anfu_junxin: {
     id: 'anfu_junxin',
     name: '安抚军心',
     type: 'active',
     prepare: false,
     range: 3,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'group',
     targetSide: 'ally',
     tags: ['immunity', 'heal'],
@@ -2483,14 +2484,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage'],
     output: [{ kind: 'physical_damage', rate: 355 }],
   },
-  /** 连战（B 主动）：使自身可以进行两次普通攻击，持续 1 回合 */
+  /** 连战（B 主动·发动率满级 35%）：使自身可以进行两次普通攻击，持续 1 回合 */
   lianzhan: {
     id: 'lianzhan',
     name: '连战',
     type: 'active',
     prepare: false,
     range: 1,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'self',
     tags: ['combo'],
     output: [{ kind: 'inflict_status', status: { type: 'combo', duration: 1 }, target: 'self' }],
@@ -2508,16 +2509,16 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.45,
     targetMode: 'random_single',
     tags: ['damage'],
-    output: [{ kind: 'strategy_damage', rate: 105.2, strategyScaled: true, growthRate: 0.7 }],
+    output: [{ kind: 'strategy_damage', rate: 105.2, strategyScaled: true, growthRate: 1.015 }],
   },
-  /** 佯攻（C 主动）：使敌军单体陷入怯战状态，无法进行普通攻击，持续 2 回合 */
+  /** 佯攻（C 主动·发动率满级 35%）：使敌军单体陷入怯战状态，无法进行普通攻击，持续 2 回合 */
   yanggong: {
     id: 'yanggong',
     name: '佯攻',
     type: 'active',
     prepare: false,
     range: 3,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'random_single',
     tags: ['cowardice'],
     output: [{ kind: 'inflict_status', status: { type: 'cowardice', duration: 2 } }],
@@ -2548,16 +2549,16 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'group',
     targetSide: 'ally',
     tags: ['heal'],
-    output: [{ kind: 'heal', rate: 98, strategyScaled: true, growthRate: 0.7 }],
+    output: [{ kind: 'heal', rate: 98, strategyScaled: true, growthRate: 0.975 }],
   },
-  /** 反计（C 主动）：使敌军单体陷入犹豫状态，无法发动主动战法，持续 2 回合 */
+  /** 反计（C 主动·发动率满级 35%）：使敌军单体陷入犹豫状态，无法发动主动战法，持续 2 回合 */
   fanji: {
     id: 'fanji',
     name: '反计',
     type: 'active',
     prepare: false,
     range: 3,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'random_single',
     tags: ['hesitation'],
     output: [{ kind: 'inflict_status', status: { type: 'hesitation', duration: 2 } }],
@@ -2648,8 +2649,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'group',
     tags: ['damage', 'burning'],
     output: [
-      { kind: 'strategy_damage', rate: 69, strategyScaled: true, growthRate: 0.7 },
-      { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 69, growthRate: 0.7 } },
+      { kind: 'strategy_damage', rate: 69, strategyScaled: true, growthRate: 0.675 },
+      { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 69, growthRate: 0.675 } },
     ],
   },
   /** 火辎（C 主动）：1 回合准备，对敌军群体发动策略攻击 75%，并使其陷入燃烧状态（75%），持续 1 回合 */
@@ -2677,16 +2678,16 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.45,
     targetMode: 'group',
     tags: ['panic'],
-    output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 47.6, growthRate: 0.7 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 47.6, growthRate: 0.42 } }],
   },
-  /** 疑兵（C 主动）：使敌军单体陷入暴走状态，进行无差别攻击，持续 1 回合 */
+  /** 疑兵（C 主动·发动率满级 35%）：使敌军单体陷入暴走状态，进行无差别攻击，持续 1 回合 */
   yibing: {
     id: 'yibing',
     name: '疑兵',
     type: 'active',
     prepare: false,
     range: 2,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'random_single',
     tags: ['rampage'],
     output: [{ kind: 'inflict_status', status: { type: 'rampage', duration: 1 } }],
@@ -2717,7 +2718,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'group',
     tags: ['damage', 'debuff_defense'],
     output: [
-      { kind: 'strategy_damage', rate: 105, strategyScaled: true, growthRate: 0.7 },
+      { kind: 'strategy_damage', rate: 105, strategyScaled: true, growthRate: 1.05 },
       { kind: 'inflict_status', status: { type: 'defense_buff', amount: -6, duration: 2 } },
     ],
   },
@@ -2732,18 +2733,18 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'group',
     tags: ['damage', 'debuff_defense'],
     output: [
-      { kind: 'strategy_damage', rate: 92.2, strategyScaled: true, growthRate: 0.7 },
+      { kind: 'strategy_damage', rate: 92.2, strategyScaled: true, growthRate: 0.89 },
       { kind: 'inflict_status', status: { type: 'defense_buff', amount: -5.2, duration: 1 } },
     ],
   },
-  /** 规避（C 主动）：使自身进入规避状态，免疫接下来受到的 1 次攻击的伤害 */
+  /** 规避（C 主动·发动率满级 42%）：使自身进入规避状态，免疫接下来受到的 1 次攻击的伤害 */
   guibi: {
     id: 'guibi',
     name: '规避',
     type: 'active',
     prepare: false,
     range: 1,
-    triggerRate: 0.36,
+    triggerRate: 0.42,
     targetMode: 'self',
     tags: ['evasion'],
     output: [{ kind: 'grant_evasion', stacks: 1, target: 'self' }],
@@ -2784,14 +2785,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage_reduce'],
     output: [{ kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.18, duration: 2 }, target: 'self' }],
   },
-  /** 陷阱（C 主动）：使敌军单体陷入混乱状态，持续 1 回合 */
+  /** 陷阱（C 主动·发动率满级 35%）：使敌军单体陷入混乱状态，持续 1 回合 */
   xianjing: {
     id: 'xianjing',
     name: '陷阱',
     type: 'active',
     prepare: false,
     range: 2,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'random_single',
     tags: ['confusion'],
     output: [{ kind: 'inflict_status', status: { type: 'confusion', duration: 1 } }],
@@ -2848,7 +2849,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.3,
     targetMode: 'group',
     tags: ['damage_boost'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.15, duration: 2, direction: 'caused' } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.15, duration: 2, direction: 'caused', strategyScaled: true, growthRate: 0.125 } }],
   },
   /** 假途（D 主动）：使敌军群体受到攻击时的伤害提高 13%（取基值），持续 2 回合 */
   jiatu: {
@@ -2860,7 +2861,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.3,
     targetMode: 'group',
     tags: ['damage_boost'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'physical', rate: 0.13, duration: 2 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'physical', rate: 0.13, duration: 2, strategyScaled: true, growthRate: 0.1 } }],
   },
   /** 劫粮（D 主动）：使敌军群体受到策略攻击时的伤害提高 13%（取基值），持续 2 回合 */
   jieliang: {
@@ -2872,7 +2873,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.3,
     targetMode: 'group',
     tags: ['damage_boost'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'strategy', rate: 0.13, duration: 2 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'strategy', rate: 0.13, duration: 2, strategyScaled: true, growthRate: 0.1 } }],
   },
   /** 固阵（D 主动）：使自身受到策略攻击的伤害降低 35%，持续 2 回合 */
   guzhen: {
@@ -2920,7 +2921,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.3,
     targetMode: 'group',
     tags: ['damage_boost'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.15, duration: 2, direction: 'caused' } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.15, duration: 2, direction: 'caused', strategyScaled: true, growthRate: 0.125 } }],
   },
   /** 强攻（D 主动）：对敌军单体发动一次攻击 105%，并使其防御属性降低 15，持续 2 回合 */
   qianggong: {
@@ -2948,16 +2949,16 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'random_single',
     targetSide: 'ally',
     tags: ['heal'],
-    output: [{ kind: 'heal', rate: 108, strategyScaled: true, growthRate: 0.7 }],
+    output: [{ kind: 'heal', rate: 108, strategyScaled: true, growthRate: 1.1 }],
   },
-  /** 横扫（D 主动）：使自身进入分兵状态（伤害率 75%），持续 1 回合 */
+  /** 横扫（D 主动·发动率满级 30%）：使自身进入分兵状态（伤害率 75%），持续 1 回合 */
   hengsao: {
     id: 'hengsao',
     name: '横扫',
     type: 'active',
     prepare: false,
     range: 1,
-    triggerRate: 0.28,
+    triggerRate: 0.3,
     targetMode: 'self',
     tags: ['split'],
     output: [{ kind: 'inflict_status', status: { type: 'split', duration: 1, rate: 75 }, target: 'self' }],
@@ -2974,14 +2975,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage_boost'],
     output: [{ kind: 'inflict_status', status: { type: 'damage_boost', damageType: 'strategy', rate: 0.35, duration: 2, direction: 'caused' }, target: 'self' }],
   },
-  /** 诱敌（D 主动）：挑衅敌军单体使其攻击自身，并使之攻击属性降低 39，持续 2 回合 */
+  /** 诱敌（D 主动·发动率满级 35%）：挑衅敌军单体使其攻击自身，并使之攻击属性降低 39，持续 2 回合 */
   youdi: {
     id: 'youdi',
     name: '诱敌',
     type: 'active',
     prepare: false,
     range: 2,
-    triggerRate: 0.3,
+    triggerRate: 0.35,
     targetMode: 'random_single',
     targetSide: 'enemy',
     tags: ['taunt', 'debuff_attack'],
@@ -3001,7 +3002,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'all',
     targetSide: 'ally',
     tags: ['damage_reduce'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.16, duration: 2 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.16, duration: 2, strategyScaled: true, growthRate: 0.1 } }],
   },
   /** 顽抗（D 主动）：移除自身有害效果，并对敌军单体发动一次攻击 80% */
   wankang: {
@@ -3307,7 +3308,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     groupCount: [1, 2],
     tags: ['heal'],
     output: [
-      { kind: 'inflict_status', status: { type: 'rest', rate: 87, growthRate: 1.15, duration: 2, strategyScaled: true } },
+      { kind: 'inflict_status', status: { type: 'rest', rate: 87, growthRate: 0.775, duration: 2, strategyScaled: true } },
     ],
   },
   /**
@@ -3324,7 +3325,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'ally',
     tags: ['heal'],
     output: [
-      { kind: 'inflict_status', status: { type: 'rest', rate: 82, growthRate: 1.15, duration: 2, strategyScaled: true } },
+      { kind: 'inflict_status', status: { type: 'rest', rate: 82, growthRate: 0.775, duration: 2, strategyScaled: true } },
     ],
   },
   /**
@@ -4165,7 +4166,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       {
         kind: 'inflict_status',
         troopTypes: ['cavalry', 'infantry'],
-        status: { type: 'damage_boost', damageType: 'physical', rate: 0.28, duration: 999, direction: 'caused', charges: 2, strategyScaled: true },
+        status: { type: 'damage_boost', damageType: 'physical', rate: 0.28, duration: 999, direction: 'caused', charges: 2, strategyScaled: true, growthRate: 0.1 },
       },
     ],
   },
@@ -4239,7 +4240,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     output: [{ kind: 'physical_damage', rate: 450, ignoresTroopCounter: true }],
   },
   /**
-   * 烽火覆周（褒姒 h376·主动 50%–100% 距离 5）：火攻 95% 受谋略但无 growthRate（取基值）；连锁 60% 每次 −20%。
+   * 烽火覆周（褒姒 h376·主动·发动率满级 100%，官方 50%–100%·距离 5）：火攻 95% 受谋略但无 growthRate（取基值）；连锁 60% 每次 −20%。
    */
   fenghuo_fuzhou: {
     id: 'fenghuo_fuzhou',
@@ -4247,13 +4248,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     type: 'active',
     prepare: false,
     range: 5,
-    triggerRate: [0.5, 1],
+    triggerRate: 1,
     targetMode: 'random_single',
     tags: ['damage'],
     output: [{
       kind: 'strategy_damage',
       rate: 95,
       strategyScaled: true,
+      growthRate: 1.0,
       chain: { chance: 0.6, decay: 0.2 },
     }],
   },
@@ -4280,6 +4282,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         direction: 'caused',
         charges: 1,
         speedScaled: true,
+        growthRate: 0.15,
         damageType: 'physical',
       },
     }],
@@ -4389,14 +4392,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     ],
   },
   /**
-   * 文伐（B 追击 20%–40%）：对攻击目标策略 228%（受谋略 2.1%/点），再使其下一次受到策略攻击伤害 +20%（taken charges 1，无成长率）。
+   * 文伐（B 追击·发动率满级 40%，官方 20%–40%）：对攻击目标策略 228%（受谋略 2.1%/点），再使其下一次受到策略攻击伤害 +20%（taken charges 1，无成长率）。
    */
   wenfa: {
     id: 'wenfa',
     name: '文伐',
     type: 'pursuit',
     range: 0,
-    triggerRate: [0.2, 0.4],
+    triggerRate: 0.4,
     tags: ['damage', 'damage_boost'],
     output: [
       { kind: 'strategy_damage', rate: 228, strategyScaled: true, growthRate: 2.1 },
@@ -4647,8 +4650,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage'],
     output: [
-      { kind: 'strategy_damage', rate: 132, strategyScaled: true },
-      { kind: 'strategy_damage', rate: 198, strategyScaled: true, targetMode: 'random_single' },
+      { kind: 'strategy_damage', rate: 132, strategyScaled: true, growthRate: 1.4 },
+      { kind: 'strategy_damage', rate: 198, strategyScaled: true, growthRate: 2.1, targetMode: 'random_single' },
     ],
   },
   /**
@@ -4672,7 +4675,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage'],
     output: [
       { kind: 'physical_damage', rate: 200, targetPick: 'lowest_defense_in_range' },
-      { kind: 'strategy_damage', rate: 159, strategyScaled: true, targetPick: 'lowest_strategy_in_range' },
+      { kind: 'strategy_damage', rate: 159, strategyScaled: true, growthRate: 1.55, targetPick: 'lowest_strategy_in_range' },
     ],
   },
   /**
@@ -4803,8 +4806,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage', 'panic'],
     output: [
-      { kind: 'strategy_damage', rate: 108, strategyScaled: true },
-      { kind: 'strategy_damage', rate: 108, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 108, strategyScaled: true, growthRate: 1.0 },
+      { kind: 'strategy_damage', rate: 108, strategyScaled: true, growthRate: 1.0 },
       {
         kind: 'morale_branch',
         compareTo: 'caster',
@@ -4837,7 +4840,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage', 'debuff_strategy'],
     output: [
-      { kind: 'strategy_damage', rate: 180, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 180, strategyScaled: true, growthRate: 1.5 },
       {
         kind: 'morale_branch',
         compareTo: 'caster',
@@ -5194,7 +5197,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.4,
     tags: ['damage'],
     output: [
-      { kind: 'strategy_damage', rate: 110, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 110, strategyScaled: true, growthRate: 1.0 },
       { kind: 'remove_buffs' },
     ],
   },
@@ -5215,7 +5218,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.45,
     tags: ['damage', 'burning'],
     output: [
-      { kind: 'strategy_damage', rate: 192, strategyScaled: true, dotFormula: true },
+      { kind: 'strategy_damage', rate: 192, strategyScaled: true, growthRate: 1.9, dotFormula: true },
       { kind: 'remove_buffs' },
     ],
   },
@@ -5431,7 +5434,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         { startRound: 6, times: 4 },
       ],
       rate: 120,
-      growthRate: 0,
+      growthRate: 0.3,
       defenseScaled: true,
     },
   },
@@ -5598,6 +5601,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         direction: 'caused',
         damageType: 'strategy',
         strategyScaled: true,
+        growthRate: 0.025,
         stacks: 1,
         maxStacks: 5,
       },
@@ -5843,8 +5847,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage'],
     output: [
-      { kind: 'strategy_damage', rate: 132, strategyScaled: true },
-      { kind: 'mark_deal_punish', rate: 165, strategyScaled: true, groupCount: [1, 2] },
+      { kind: 'strategy_damage', rate: 132, strategyScaled: true, growthRate: 1.275 },
+      { kind: 'mark_deal_punish', rate: 165, strategyScaled: true, growthRate: 1.625, groupCount: [1, 2] },
     ],
   },
 
@@ -5878,7 +5882,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       {
         kind: 'schedule_strike',
         output: [
-          { kind: 'strategy_damage', rate: 150, strategyScaled: true },
+          { kind: 'strategy_damage', rate: 150, strategyScaled: true, growthRate: 1.575 },
           { kind: 'physical_damage', rate: 150 },
         ],
       },
@@ -5944,7 +5948,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage', 'damage_boost'],
     output: [
-      { kind: 'strategy_damage', rate: 130, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 130, strategyScaled: true, growthRate: 1.375 },
       {
         kind: 'inflict_status',
         targetSide: 'enemy',
@@ -9471,7 +9475,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
   // ─────────── 典藏战法 · 第一批（9 个，2026-09-21 批次）───────────
 
   /**
-   * 河内世泽（典藏 S 主动）：距离 4，发动率 25%~35%，目标「敌军群体（有效距离内 1-2 个目标）」。
+   * 河内世泽（典藏 S 主动）：距离 4，发动率满级 35%（官方区间 25%~35% 取上界），目标「敌军群体（有效距离内 1-2 个目标）」。
    * 官方：随机发动落雷、迷阵、溃堤、夹攻中的一种，并再次随机发动伐谋、雀伏、火辎、毒泉中的一种。
    *   发动的战法有效距离为 4，并跳过准备回合，每个战法的效果与原战法在同等级下效果相同。
    *   来源 https://stzb.163.com/m/skilllist/200847.html（scripts/skill_extra.json id 200847）。
@@ -9487,7 +9491,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     type: 'active',
     prepare: false,
     range: 4,
-    triggerRate: [0.25, 0.35],
+    triggerRate: 0.35,
     targetMode: 'group',
     groupCount: 2,
     tags: ['damage', 'confusion', 'rampage', 'debuff_attack', 'debuff_strategy', 'panic', 'burning'],
@@ -9845,7 +9849,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['heal', 'rest', 'damage_boost'],
     output: [
       // ① 立即恢复 75%（受谋略，成长率未确认 → growthRate 0 基值）
-      { kind: 'heal', rate: 75, strategyScaled: true, growthRate: 0 },
+      { kind: 'heal', rate: 75, strategyScaled: true, growthRate: 0.75 },
       // ② 休整 75%（受谋略，成长率未确认 → 0）持续 1 回合；【追加】3 将兵种相同 → 改为立即恢复同额
       {
         kind: 'conditional',
@@ -9853,19 +9857,19 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         outputs: [
           {
             kind: 'inflict_status',
-            status: { type: 'rest', rate: 75, growthRate: 0, duration: 1, strategyScaled: true },
+            status: { type: 'rest', rate: 75, growthRate: 0.75, duration: 1, strategyScaled: true },
           },
         ],
       },
       {
         kind: 'conditional',
         require: { teamTroopSame: true },
-        outputs: [{ kind: 'heal', rate: 75, strategyScaled: true, growthRate: 0 }],
+        outputs: [{ kind: 'heal', rate: 75, strategyScaled: true, growthRate: 0.75 }],
       },
       // ③ 进行攻击和策略攻击时的伤害提高 17%（受谋略，成长率未确认 → 留空基值）持续 2 回合
       {
         kind: 'inflict_status',
-        status: { type: 'damage_boost', rate: 0.17, duration: 2, direction: 'caused', strategyScaled: true },
+        status: { type: 'damage_boost', rate: 0.17, duration: 2, direction: 'caused', strategyScaled: true, growthRate: 0.125 },
       },
     ],
   },
@@ -10127,6 +10131,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           direction: 'taken',
           damageType: 'physical',
           speedScaled: true,
+          growthRate: 0.1,
           undispellable: true,
         },
       },
@@ -10134,7 +10139,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
   },
 
   /**
-   * 当阳桥（典藏 S 主动·1 回合准备）：距离 4，发动率 25%~40%，目标「敌军单体」。
+   * 当阳桥（典藏 S 主动·1 回合准备）：距离 4，发动率满级 40%（官方区间 25%~40% 取上界），目标「敌军单体」。
    * 官方【常规】1 回合准备，使敌军单体陷入混乱状态，持续 1~2 回合；使敌军群体 1 回合后陷入犹豫状态，
    *   持续 1 回合；使敌军群体 2 回合后陷入怯战状态，持续 1 回合。
    *   【追加】张飞发动此战法后，自身造成的主动战法伤害提升 10.0%，持续 3 回合。
@@ -10151,7 +10156,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     type: 'active',
     prepare: true,
     range: 4,
-    triggerRate: [0.25, 0.4],
+    triggerRate: 0.4,
     targetMode: 'random_single',
     tags: ['confusion', 'hesitation', 'cowardice', 'damage_boost'],
     output: [
@@ -10590,11 +10595,11 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
   },
 
   /**
-   * 疾战（B 主动·距离 1·目标「自己」·发动率 30%~40%）：
+   * 疾战（B 主动·距离 1·目标「自己」·发动率满级 40%，官方区间 30%~40% 取上界）：
    * 使自身在本回合可以进行两次普通攻击，并免疫怯战效果。
    * 官方 https://stzb.163.com/m/skilllist/200819.html（id 200819；1 级同）。
    * 口径：① 连击 `combo duration 1`（本回合）；② 免疫怯战 `cowardice_immune duration 1`
-   *   （魏武之泽同款状态）；③ 发动率为区间 → `triggerRate: [0.3, 0.4]` 每次 intInclusive 抽整百（仓库既有口径）。
+   *   （魏武之泽同款状态）。
    * 全文无「受 XX 属性影响」→ 上架。
    */
   jizhan: {
@@ -10603,7 +10608,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     type: 'active',
     prepare: false,
     range: 1,
-    triggerRate: [0.3, 0.4],
+    triggerRate: 0.4,
     targetMode: 'self',
     tags: ['combo', 'cowardice_immune'],
     output: [
@@ -11648,5 +11653,38 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         outputs: [{ kind: 'physical_damage', rate: 300 }],
       },
     ],
+  },
+
+  /**
+   * 洛水佳人（甄洛·群弓 h15 主战法）：指挥 S，一类指挥，距离 3，我军全体。
+   * 满级「本场战斗中，使我军全体每回合都有 80.0% 的几率恢复一定兵力（恢复率 90.0%，受谋略属性影响）」。
+   * 官方 effect 标签是休整；文案是每回合几率恢复，且治疗量随甄洛当前兵力变化，
+   * 所以走 `roundStartChance` + 即时 `heal`（现算兵力），不挂会在准备阶段冻结恢复值的 `rest`。
+   * 80% 是整次判定（命中则全体一起恢复）。恢复率成长 0.75/点（用户 2026-10-07 指定）。
+   */
+  luoshui_jiaren: {
+    id: 'luoshui_jiaren',
+    name: '洛水佳人',
+    type: 'command',
+    phase: 'prep',
+    range: 3,
+    triggerRate: 1,
+    targetMode: 'all',
+    targetSide: 'ally',
+    tags: ['heal'],
+    output: [],
+    roundStartChance: {
+      chance: 80,
+      output: [
+        {
+          kind: 'heal',
+          rate: 90,
+          strategyScaled: true,
+          growthRate: 0.75,
+          targetSide: 'ally',
+          targetMode: 'all',
+        },
+      ],
+    },
   },
 };

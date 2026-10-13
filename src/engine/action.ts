@@ -583,7 +583,7 @@ function boostedBaseRate(unit: UnitState, skillType: SkillType, baseRate: number
 }
 
 /**
- * 发动率：数字原样；区间则每次用 intInclusive 抽整数百分再 /100（烽火覆周 50–100）。
+ * 发动率：数字原样；区间则每次用 intInclusive 抽整数百分再 /100。满级战法不走区间。
  */
 function rollTriggerRate(rng: Rng, triggerRate: number | [number, number]): number {
   if (!Array.isArray(triggerRate)) return triggerRate;

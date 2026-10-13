@@ -38,8 +38,12 @@ describe('暂时下架名单', () => {
   });
 
   it('未确认成长的可学习战法 isLearnableSkillListed=false', () => {
-    expect(isLearnableSkillListed('jijiu')).toBe(false);
-    expect(isLearnableSkillListed('qixi')).toBe(false);
+    // 2026-10-13 摘牌后仍在下架的（成长率仍未确认）
+    expect(isLearnableSkillListed('famou')).toBe(false);
+    expect(isLearnableSkillListed('youji')).toBe(false);
+    // 本批反推确认成长率 → 已摘牌，转为上架
+    expect(isLearnableSkillListed('jijiu')).toBe(true);
+    expect(isLearnableSkillListed('qixi')).toBe(true);
     expect(isLearnableSkillListed('dashang_sanjun')).toBe(true);
     expect(isLearnableSkillListed('tujin')).toBe(true);
   });

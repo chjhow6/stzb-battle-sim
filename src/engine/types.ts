@@ -893,7 +893,7 @@ interface BaseSkill {
   type: SkillType;
   /** 战法有效距离 */
   range: number;
-  /** 发动率 0~1（指挥/被动为 1）；`[0.5, 1]` = 每次判定均匀随机 50%–100%（烽火覆周） */
+  /** 发动率 0~1（指挥/被动为 1）。`[min, max]` = 每次判定在闭区间内均匀随机；满级战法取区间上界，不用这个。 */
   triggerRate: number | [number, number];
   /** 效果标签：冲突判定用（含伤害时永不与其他效果冲突） */
   tags: EffectTag[];
