@@ -75,9 +75,9 @@ beforeEach(() => {
 
 describe('配将池「显示下架武将」开关', () => {
   it('默认只显示上架武将，下架将不进池', () => {
-    // 基线口径（2026-10-13 三批摘牌后）：上架 138（本轮再摘 21 条战法 —— 子技能引用链展开后包内反推成长率）
-    expect(HEROES.length).toBe(138);
-    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(20);
+    // 基线口径（2026-10-13 四批摘牌后）：上架 146（再摘 8 条 —— 段值用「小数」时补 ÷100 候选后命中）
+    expect(HEROES.length).toBe(146);
+    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(12);
     expect(SLOTTED_HEROES.length).toBe(HEROES.length + OFFLINE_HEROES.length);
     expect(cards(ctx.pool).length).toBe(HEROES.length);
     // 本批新增的 7 将里，只有甘宁（侵掠如火）/吕姬（缚父临危）上架
@@ -85,8 +85,8 @@ describe('配将池「显示下架武将」开关', () => {
     expect(cardOf(ctx.pool, 'h634')).toBeDefined();
     // 本轮摘牌回池：h562 = 地公将军（digong_jiangjun，包内反推成长率 strategy 1.45 / 属性 0.175）
     expect(cardOf(ctx.pool, 'h562')).toBeDefined();
-    // 仍下架的 4 将默认不可见（池子里连卡都没有）
-    for (const id of ['h807', 'h790', 'h788', 'h675']) {
+    // 仍下架的 4 将默认不可见（池子里连卡都没有）—— h815 = XP孟获（manwang_yuzhong 兵种分支未建模，保留）
+    for (const id of ['h807', 'h790', 'h788', 'h815']) {
       expect(cardOf(ctx.pool, id), `${id} 不该出现在默认池`).toBeUndefined();
     }
   });

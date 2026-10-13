@@ -4351,7 +4351,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       kind: 'inflict_status',
       status: {
         type: 'damage_boost',
-        rate: 0.1,
+        rate: 0.1, growthRate: 0.05,
         duration: 999,
         direction: 'caused',
         damageType: 'strategy',
@@ -6551,7 +6551,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           kind: 'inflict_status',
           status: {
             type: 'damage_boost',
-            rate: 0.07,
+            rate: 0.07, growthRate: 0.05,
             duration: 1,
             direction: 'caused',
             strategyScaled: true,
@@ -7806,8 +7806,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     troopThresholdBuff: {
       thresholds: [90, 80, 70, 60],
       output: [
-        { kind: 'inflict_status', target: 'self', status: { type: 'damage_boost', rate: 0.05, duration: 999, direction: 'caused', damageType: 'physical', attackScaled: true, stack: true } },
-        { kind: 'inflict_status', target: 'self', status: { type: 'heal_boost', rate: 0.05, duration: 999, defenseScaled: true, stack: true } },
+        { kind: 'inflict_status', target: 'self', status: { type: 'damage_boost', rate: 0.05, growthRate: 0.025, duration: 999, direction: 'caused', damageType: 'physical', attackScaled: true, stack: true } },
+        { kind: 'inflict_status', target: 'self', status: { type: 'heal_boost', rate: 0.05, growthRate: 0.025, duration: 999, defenseScaled: true, stack: true } },
       ],
     },
   },
@@ -8409,7 +8409,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       { kind: 'inflict_status', status: { type: 'strategy_buff', amount: 80, duration: 2, decayOnDeal: 4 } },
       { kind: 'inflict_status', status: { type: 'defense_buff', amount: 80, duration: 2, decayOnDeal: 4 } },
       // 受到的所有伤害减少 20%（受谋略，成长率未确认 → 基值）——每次造成伤害 −1/4 份
-      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.2, duration: 2, strategyScaled: true, decayOnDeal: 4 } },
+      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.2, growthRate: 0.1, duration: 2, strategyScaled: true, decayOnDeal: 4 } },
     ],
   },
 
@@ -8605,7 +8605,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           // A：80% 起每回合 −10% → 造成（攻击/策略）伤害提高 25%（受谋略未确认 → 基值）
           kind: 'inflict_status',
           // status 为类型必填占位：本段实际用 byHigherStatStatus 逐目标二选一（引擎优先取后者）
-          status: { type: 'damage_boost', rate: 0.25, duration: 1, direction: 'caused', damageType: 'strategy', strategyScaled: true },
+          status: { type: 'damage_boost', rate: 0.25, growthRate: 0.125, duration: 1, direction: 'caused', damageType: 'strategy', strategyScaled: true },
           roundRampingChance: { base: 0.8, increment: -0.1 },
           byHigherStatStatus: {
             attack: { type: 'damage_boost', rate: 0.25, duration: 1, direction: 'caused', damageType: 'physical', strategyScaled: true },
@@ -8979,7 +8979,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'inflict_status',
         status: {
           type: 'damage_reduce',
-          rate: 0.4,
+          rate: 0.4, growthRate: 0.2,
           duration: 999,
           strategyScaled: true,
           damageType: 'strategy',
@@ -9044,7 +9044,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       rounds: [3, 5, 7],
       output: [
         // ③ 受到所有伤害 −24%（受谋略未确认 → 基值），持续 1 回合
-        { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.24, duration: 1, strategyScaled: true } },
+        { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.24, growthRate: 0.15, duration: 1, strategyScaled: true } },
         // ④ 同心：其余同心者各分摊 15%（持续 1 回合、不限次）
         { kind: 'inflict_status', status: { type: 'damage_share', rate: 0.15, duration: 1 } },
       ],
