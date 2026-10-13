@@ -6176,7 +6176,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           attackScaled: true,
         },
       },
-      // ③ 友军单体（不含自身）：同款 +20%
+      // ③ 友军单体（不含自身）：同款 +20%（与②同句同受攻击缩放 → growthRate 同 0.125）
       {
         kind: 'inflict_status',
         targetSide: 'ally',
@@ -6184,7 +6184,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         excludeSelf: true,
         status: {
           type: 'damage_boost',
-          rate: 0.2,
+          rate: 0.2, growthRate: 0.125,
           duration: 2,
           direction: 'caused',
           skillTypes: ['active'],
@@ -8790,7 +8790,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     // ③④ 每回合结束：为我军兵力最低单体恢复 2 次兵力（每次独立选靶；恢复率 100% 受谋略未确认 → 基值）
     roundEndOutput: [
       { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0.3, targetPick: 'lowest_troops_ally' },
-      { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0, targetPick: 'lowest_troops_ally' },
+      { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0.3, targetPick: 'lowest_troops_ally' },
     ],
     output: [],
   },
