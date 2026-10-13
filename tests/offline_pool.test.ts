@@ -75,9 +75,11 @@ beforeEach(() => {
 
 describe('配将池「显示下架武将」开关', () => {
   it('默认只显示上架武将，下架将不进池', () => {
-    // 基线口径（2026-10-13 四批摘牌后）：上架 146（再摘 8 条 —— 段值用「小数」时补 ÷100 候选后命中）
-    expect(HEROES.length).toBe(146);
-    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(12);
+    // 基线口径（2026-10-13 六批摘牌后）：上架 151 = 147 + 4
+    //（qingqiu_meihuo 妲己 / huanshi_xuchi 沮授 / fengling_hushu 马岱 / cijian_changqu 刘禅 —— 四者主战法成长率均经包内自证通过）
+    expect(HEROES.length).toBe(151);
+    // 摘 4 张牌后下架将 14 → 10（现任一版本仍应保有两位数下架集，防「全量误摘」）
+    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(10);
     expect(SLOTTED_HEROES.length).toBe(HEROES.length + OFFLINE_HEROES.length);
     expect(cards(ctx.pool).length).toBe(HEROES.length);
     // 本批新增的 7 将里，只有甘宁（侵掠如火）/吕姬（缚父临危）上架

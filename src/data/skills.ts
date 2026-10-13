@@ -18,11 +18,11 @@ function juyizangfouOption(attr: 'attack' | 'defense' | 'strategy'): SkillOutput
   const statStatus = (amount: number): CreateStatus => {
     switch (attr) {
       case 'attack':
-        return { type: 'attack_buff', amount, duration: 1, strategyScaled: true, growthRate: 0 };
+        return { type: 'attack_buff', amount, duration: 1, strategyScaled: true, growthRate: 0.1 };
       case 'defense':
-        return { type: 'defense_buff', amount, duration: 1, strategyScaled: true, growthRate: 0 };
+        return { type: 'defense_buff', amount, duration: 1, strategyScaled: true, growthRate: 0.1 };
       case 'strategy':
-        return { type: 'strategy_buff', amount, duration: 1, strategyScaled: true, growthRate: 0 };
+        return { type: 'strategy_buff', amount, duration: 1, strategyScaled: true, growthRate: 0.1 };
     }
   };
   return [
@@ -3207,7 +3207,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       },
     ],
   },
-  /** 缓师徐持（沮授主战法·一类指挥）：已行动的敌军受到伤害后，50%（受谋略，成长率按增减伤推定 0.15/点）
+  /** 缓师徐持（沮授主战法·一类指挥）：已行动的敌军受到伤害后，50%（受谋略，成长率 0.125/点·包内 f0=153 槽 f12÷200）
    *  令目标攻/防/谋/速 -20 点，独立判定两次，可叠加至战斗结束。-20 点数不受谋略。 */
   huanshi_xuchi: {
     id: 'huanshi_xuchi',
@@ -3221,7 +3221,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       victim: 'enemy',
       rate: 0.5,
       rateStrategyScaled: true,
-      rateGrowthRate: 0.15,
+      rateGrowthRate: 0.125,
       onlyIfActed: true,
       rolls: 2,
       applyTo: 'victim',
@@ -6226,7 +6226,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // 第 3 回合起：燃烧 41%
       {
         atRound: 3,
-        output: [{ kind: 'inflict_status', status: { type: 'burning', duration: 999, rate: 41, growthRate: 0 } }],
+        output: [{ kind: 'inflict_status', status: { type: 'burning', duration: 999, rate: 41, growthRate: 0.125 } }],
       },
       // 第 5 回合起：妖术 44%
       {
@@ -6267,7 +6267,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         targetMode: 'all',
         status: {
           type: 'damage_boost',
-          rate: 0.2,
+          rate: 0.2, growthRate: 0.125,
           duration: 3,
           direction: 'taken',
           dotTypes: ['burning', 'panic', 'curse'],
@@ -6488,8 +6488,9 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    * 我军全体在正式回合后施加的策略伤害，在生效时会对目标相邻的敌军额外造成一次策略伤害
    * （伤害率为原伤害率的 15%），此比例每回合结束时额外提升 5%，可叠加，持续至战斗结束。
    * 官方：scripts/skill_extra.json id 200282（指挥 S / 距离 5 / 我军全体 / 弓步骑；1 级 7.5% / 2.5%）。
-   * 成长率：两处「受谋略属性影响」均未确认 → 留空（strategyScaled 在、不给 growthRate → 按基值不缩放）；
-   * 登记 OFFLINE_MAIN_SKILLS（武将暂下架）。
+   * 成长率（已确认）：base = 15 → **0.075**，perRound = 5 → **0.025**（两段斜率比 = 基值比 3:1，
+   *   同属一个乘性因子 `0.6 + 谋略/200`）。据此为 `strategyAdjacentBonus` 增设 `perRoundGrowthRate`
+   *   —— 原只有单个 growthRate，会被同时套到两段上、把 perRound 放大 3 倍。
    * 引擎配套：**新增 `CommandSkill.strategyAdjacentBonus`（策略伤害相邻跳伤光环）** ——
    *   本侧单位造成**策略伤害输出段**生效后，对目标同侧相邻单位额外结算一次策略伤害
    *   （伤害率 = 原伤害率 × (baseRate + perRound × (当前回合 − 1))）；额外伤害沿用原伤害造成者的
@@ -6507,7 +6508,13 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'ally',
     tags: ['damage'],
     output: [],
-    strategyAdjacentBonus: { baseRate: 15, perRound: 5, strategyScaled: true },
+    strategyAdjacentBonus: {
+      baseRate: 15,
+      perRound: 5,
+      strategyScaled: true,
+      growthRate: 0.075,
+      perRoundGrowthRate: 0.025,
+    },
   },
 
   /**
@@ -6739,7 +6746,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     output: [],
     allyActStacks: {
       maxStacks: 5,
-      boostRate: 0.35,
+      boostRate: 0.35, boostGrowthRate: 0.2, reduceGrowthRate: 0.125,
       boostAttackScaled: true,
       reduceRate: 0.2,
       reduceDefenseScaled: true,
@@ -7091,7 +7098,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       { kind: 'inflict_status', status: { type: 'cowardice', duration: 999 } },
     ],
     // 友军全体每回合首次成功释放主动战法后：40%（受谋略，成长率未确认 → 基值）再次发动，伤害/恢复 ×50%
-    allyRecast: { rate: 40, factor: 0.5 },
+    allyRecast: { rate: 40, growthRate: 0.1, factor: 0.5 },
   },
   /**
    * 僭号天子（袁术·群步 h790·指挥 S）：距离 3，我军全体。
@@ -7127,7 +7134,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage'],
     output: [],
     // 玉玺：我方全体受击的 32%（受防御，成长率未确认 → 基值）转入账本，每回合开始结转给自身
-    sealTransfer: { rate: 32 },
+    sealTransfer: { rate: 32, growthRate: 0.05 },
   },
   /**
    * 伏波扬砂（马腾·群骑 h785·指挥 S）：距离 5，我军全体。
@@ -7269,7 +7276,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     // 士气降低为**显式可叠加**（用户 2026-09-19 确认，9 次 → −45）：施加模板带 `stack: true`
     // （见 action.ts `triggerHealOnDamageCommands`），故同源重复施加走「显式叠层 → 数值累加」分支；
     // 官方未写「可叠加」，此为唯一例外特例，其余未标 stack 的战法仍为刷新不叠加。
-    healOnDamage: { moraleReduce: 5, maxTriggers: 9, healRate: 50 },
+    healOnDamage: { moraleReduce: 5, maxTriggers: 9, healRate: 50, growthRate: 0.2 },
   },
   /**
    * 举抑臧否（许劭·汉弓 h770·指挥 A）：距离 5，官方目标「敌友单体」。
@@ -7634,7 +7641,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             growthRate: 0.8,
             targetSide: 'ally',
             targetPick: 'lowest_troops_ally',
-            attachStatus: { type: 'damage_reduce', rate: 0.15, duration: 1, strategyScaled: true },
+            attachStatus: { type: 'damage_reduce', rate: 0.15, growthRate: 0.15, duration: 1, strategyScaled: true },
           },
         ],
       },
@@ -7701,7 +7708,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         targetSide: 'ally',
         targetMode: 'group',
         groupCount: 2,
-        attachStatus: { type: 'rest', rate: 206, growthRate: 0, strategyScaled: true, duration: 1 },
+        attachStatus: { type: 'rest', rate: 206, growthRate: 1.875, strategyScaled: true, duration: 1 },
       },
     ],
   },
@@ -8240,7 +8247,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       {
         atRound: 6,
         output: [
-          { kind: 'strategy_damage', rate: 100, strategyScaled: true, attacker: 'recipient', targetMode: 'random_single' },
+          { kind: 'strategy_damage', rate: 100, growthRate: 0.7, strategyScaled: true, attacker: 'recipient', targetMode: 'random_single' },
         ],
       },
       {
@@ -8453,7 +8460,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       output: [
         {
           kind: 'inflict_status',
-          status: { type: 'avoid_charge', stacks: 2, perStackRate: 0.1, duration: 999, strategyScaled: true },
+          status: { type: 'avoid_charge', stacks: 2, perStackRate: 0.1, growthRate: 0.1, duration: 999, strategyScaled: true },
         },
       ],
     },
@@ -8461,7 +8468,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     avoidOnConsume: {
       chance: 0.5,
       output: [
-        { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 150, growthRate: 0 } },
+        { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 150, growthRate: 1.5 } },
         {
           kind: 'inflict_status',
           status: {
@@ -8608,8 +8615,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           status: { type: 'damage_boost', rate: 0.25, growthRate: 0.125, duration: 1, direction: 'caused', damageType: 'strategy', strategyScaled: true },
           roundRampingChance: { base: 0.8, increment: -0.1 },
           byHigherStatStatus: {
-            attack: { type: 'damage_boost', rate: 0.25, duration: 1, direction: 'caused', damageType: 'physical', strategyScaled: true },
-            strategy: { type: 'damage_boost', rate: 0.25, duration: 1, direction: 'caused', damageType: 'strategy', strategyScaled: true },
+            attack: { type: 'damage_boost', rate: 0.25, growthRate: 0.125, duration: 1, direction: 'caused', damageType: 'physical', strategyScaled: true },
+            strategy: { type: 'damage_boost', rate: 0.25, growthRate: 0.125, duration: 1, direction: 'caused', damageType: 'strategy', strategyScaled: true },
           },
         },
         {
@@ -8770,7 +8777,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           kind: 'inflict_status',
           status: {
             type: 'damage_boost',
-            rate: 0.048,
+            rate: 0.048, growthRate: 0.035,
             duration: 999,
             direction: 'caused',
             strategyScaled: true,
@@ -9316,7 +9323,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       ],
       // 以上效果触发后：回合结束时额外恢复我军兵力最低单体 150%（受谋略未确认 → 基值）
       roundEndOutput: [
-        { kind: 'heal', rate: 150, strategyScaled: true, growthRate: 0.8, targetPick: 'lowest_troops_ally' },
+        { kind: 'heal', rate: 150, strategyScaled: true, growthRate: 0.125, targetPick: 'lowest_troops_ally' },
       ],
     },
   },

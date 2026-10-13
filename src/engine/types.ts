@@ -35,8 +35,21 @@ export type DamageTargetPick =
   | 'lowest_defense'
   | 'lowest_defense_in_range'
   | 'lowest_strategy_in_range'
+  /** 战法有效距离内**生效攻击最低**的存活敌军（举抑臧否「使该属性最低的敌军单体对应属性降低」的攻击分支） */
+  | 'lowest_attack_in_range'
   /** 战法有效距离内**当前兵力最低**的存活敌军（知人待士「对敌军兵力最低单体发动一次策略攻击」） */
   | 'lowest_troops_in_range';
+
+/**
+ * 按属性挑**友军**单体的选择器（举抑臧否「使该属性最高的友军单体对应属性提升」）。
+ * 与 `DamageTargetPick` 对称，但作用于我军一侧；`highest_attack_ally` 早已存在（四世三公），
+ * 这里补上防御 / 谋略两个维度以便按属性分支选人。
+ * 口径：按**生效属性**比较（同 pickEnemyByDamageTargetPick 的 effectiveStat），只取存活友军。
+ */
+export type AllyStatPick =
+  | 'highest_attack_ally'
+  | 'highest_defense_ally'
+  | 'highest_strategy_ally';
 
 /** DoT 类型（妖术 / 燃烧 / 恐慌 / 妖术诅咒 / 引燃）——「被施加的 DoT 伤害提升」按此维度过滤 */
 export type DotType = 'sorcery' | 'burning' | 'panic' | 'curse' | 'ignite';
@@ -1610,6 +1623,11 @@ export interface CommandSkill extends BaseSkill {
     perRound: number;
     strategyScaled?: boolean;
     growthRate?: number;
+    /**
+     * 每回合增量 `perRound` 自身的成长率（百分点/点）。**缺省回落到 `growthRate`**（老战法行为不变）。
+     * 其徐如林实测：base 0.075、perRound 0.025 —— 两段斜率比 = 基值比，同属一个乘性因子 `0.6 + 谋略/200`。
+     */
+    perRoundGrowthRate?: number;
   };
   /**
    * 全队累计伤害门槛（徽言龙凤「友军全体共计造成 6 次伤害后，使友军全体获得以下效果」）：

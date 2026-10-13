@@ -1224,11 +1224,14 @@ function triggerStrategyAdjacentBonus(
     if (!owner) continue;
     if (!owner.alive && !l.skill.retainAfterDeath) continue;
     if (owner.side !== source.side) continue; // 只覆盖「我军全体施加的策略伤害」
-    const scale = (v: number): number =>
-      cfg.strategyScaled && cfg.growthRate !== undefined
-        ? roundRate(scaledValue(v, cfg.growthRate, effectiveStat(owner, 'strategy')))
+    const scaleWith = (v: number, g?: number): number =>
+      cfg.strategyScaled && g !== undefined
+        ? roundRate(scaledValue(v, g, effectiveStat(owner, 'strategy')))
         : v;
-    const ratioPct = scale(cfg.baseRate) + scale(cfg.perRound) * Math.max(0, ctx.currentRound - 1);
+    const ratioPct =
+      scaleWith(cfg.baseRate, cfg.growthRate) +
+      scaleWith(cfg.perRound, cfg.perRoundGrowthRate ?? cfg.growthRate) *
+        Math.max(0, ctx.currentRound - 1);
     const rate = (originalRate * ratioPct) / 100;
     for (const raw of adjacents) {
       if (!raw.alive) continue;
