@@ -8,6 +8,7 @@ import { HEROES, SLOTTED_HEROES, OFFLINE_HEROES, offlineReason, getHeroById, SKI
 import type { HeroJson } from './heroes';
 import pinyinJson from './data/pinyin.json';
 import { SKILL_REGISTRY } from '../src/data/skills';
+import { mechanismNamesOf } from '../src/data/mechanisms';
 import { TREASURES, TREASURES_BY_ID, AFFIXES } from '../src/data/treasures';
 import type { TreasureDef, AffixDef } from '../src/data/treasures';
 import type { General, Skill, TroopType, FormationBonus, TreasureLoadout } from '../src/engine/types';
@@ -1374,12 +1375,17 @@ export function openHeroDetail(heroId: string, opts: DetailOpts): void {
   redraw();
 }
 
-/** 战法详情弹窗：图标 + 品级 + 属性（类型/距离/发动率/目标）+ 官方描述（1级/满级） */
+/** 战法详情弹窗：图标 + 品级 + 属性（类型/距离/发动率/目标）+ 官方描述（1级/满级）+ 机制标签 */
 export function openSkillDetail(skillId: string): void {
   const s = SKILL_REGISTRY[skillId];
   if (!s) return;
   const grade = skillGrade(skillId);
   const info = SKILL_DESCS[skillId];
+  // 机制标签：效果机制名（数据层登记；攻城属性不实装，已在挂载侧剔除）
+  const mechNames = mechanismNamesOf(skillId);
+  const mechTags = mechNames.length
+    ? `<div class="sd-desc-title lv1">机制</div><div class="sd-mech">${mechNames.map((n) => `<span class="mech-tag">${n}</span>`).join('')}</div>`
+    : '';
   const mask = document.createElement('div');
   mask.className = 'modal-mask page-mask';
   const modal = document.createElement('div');
@@ -1398,6 +1404,7 @@ export function openSkillDetail(skillId: string): void {
         <div class="sd-desc-title">满级效果</div>
         <p>${info?.desc || '（暂无官方描述）'}</p>
         ${info?.desc1 && info.desc1 !== info.desc ? `<div class="sd-desc-title lv1">1级效果</div><p>${info.desc1}</p>` : ''}
+        ${mechTags}
       </div>
     </div>
     <div class="m-foot"><button class="btn ghost done">完成</button></div>

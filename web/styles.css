@@ -3027,6 +3027,17 @@ main {
 .sd-desc-title { font-size: 11.5px; color: var(--gold); letter-spacing: 2px; margin-bottom: 4px; }
 .sd-desc-title.lv1 { margin-top: 10px; }
 .sd-desc p { font-size: 13px; color: var(--text); line-height: 1.9; }
+/* 机制标签（数据层登记的效果机制名，来自 src/data/mechanisms） */
+.sd-mech { display: flex; flex-wrap: wrap; gap: 5px; }
+.sd-mech .mech-tag {
+  font-size: 11.5px;
+  line-height: 1.75;
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  color: var(--text);
+  background: var(--panel);
+  letter-spacing: 0.4px;
+}
 
 /* ── 宝物（P4/P4.1）：武将详情左栏宝物槽（游戏卡面）+ 三步选择弹窗 ── */
 .hd-side-col { display: flex; flex-direction: column; gap: 8px; align-items: center; align-self: stretch; min-height: 0; }
@@ -3398,4 +3409,68 @@ main {
 @media (max-width: 720px) {
   /* 窄屏：日期换行独占一行，不跟版本号/标题抢横向空间 */
   .an-item .an-date { margin-left: 0; width: 100%; }
+}
+
+/* ── 底栏「声明」入口（web/disclaimer.ts）：与版本标记同排的弱化按钮 ── */
+.control-bar button.foot-link {
+  background: transparent;
+  font-family: inherit;
+  font-size: 10.5px;
+  line-height: 1.5;
+  letter-spacing: 1px;
+  color: var(--color-text-muted);
+  padding: 1px 6px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color .12s, border-color .12s;
+}
+.control-bar button.foot-link:hover { color: var(--gold-bright); border-color: var(--gold); }
+.control-bar button.foot-link:focus-visible { outline: 1px solid var(--color-focus); outline-offset: 2px; }
+
+/* ── 声明弹窗（web/disclaimer.ts）：与公告栏同骨架 → 导读条 + 分节 + 列表 + 页脚 ── */
+/* 纯条文，比公告栏窄一档更好读（公告栏用 .modal 基础的 min(760px, 92vw)） */
+.modal.disclaimer-modal { width: min(680px, 92vw); }
+.disclaimer-modal .m-head h3 { gap: 8px; }
+.disclaimer-modal .dp-cur {
+  font-family: var(--font-sans);
+  font-size: 11.5px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 0 6px;
+  line-height: 18px;
+}
+.dp-body .dp-lead {
+  margin: 0 0 12px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--color-crimson);
+  background: var(--panel-2);
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--text);
+}
+.dp-body .dp-h {
+  margin: 12px 0 6px;
+  font-family: var(--font-kai);
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+.dp-body .dp-list { margin: 0 0 6px; padding-left: 18px; }
+.dp-body .dp-list li { font-size: 12.5px; line-height: 1.9; color: var(--text); margin-bottom: 3px; }
+.dp-body .dp-list li::marker { color: var(--gold); }
+.dp-body .dp-list a,
+.dp-body .dp-foot a { color: var(--gold-bright); text-decoration: none; border-bottom: 1px dashed var(--line-strong); }
+.dp-body .dp-list a:hover,
+.dp-body .dp-foot a:hover { color: var(--gold); }
+.dp-body .dp-foot {
+  margin: 12px 0 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  font-size: 11px;
+  line-height: 1.85;
+  color: var(--text-weak);
 }
