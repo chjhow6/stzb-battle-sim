@@ -75,16 +75,18 @@ beforeEach(() => {
 
 describe('配将池「显示下架武将」开关', () => {
   it('默认只显示上架武将，下架将不进池', () => {
-    // 基线口径（2026-10-13 摘牌后）：上架 104（本批从 OFFLINE_MAIN_SKILLS 摘掉 10 条战法 → 对应武将回池）
-    expect(HEROES.length).toBe(104);
-    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(25);
+    // 基线口径（2026-10-13 二批摘牌后）：上架 116（本轮再摘 20 条战法 —— 包内反推成长率填入后卡点消解）
+    expect(HEROES.length).toBe(116);
+    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(13);
     expect(SLOTTED_HEROES.length).toBe(HEROES.length + OFFLINE_HEROES.length);
     expect(cards(ctx.pool).length).toBe(HEROES.length);
     // 本批新增的 7 将里，只有甘宁（侵掠如火）/吕姬（缚父临危）上架
     expect(cardOf(ctx.pool, 'h34')).toBeDefined();
     expect(cardOf(ctx.pool, 'h634')).toBeDefined();
-    // 5 个下架将默认不可见（池子里连卡都没有）
-    for (const id of ['h472', 'h705', 'h615', 'h562', 'h574']) {
+    // 本轮摘牌回池：h562 = 地公将军（digong_jiangjun，包内反推成长率 strategy 1.45 / 属性 0.175）
+    expect(cardOf(ctx.pool, 'h562')).toBeDefined();
+    // 仍下架的 4 将默认不可见（池子里连卡都没有）
+    for (const id of ['h472', 'h705', 'h615', 'h574']) {
       expect(cardOf(ctx.pool, id), `${id} 不该出现在默认池`).toBeUndefined();
     }
   });

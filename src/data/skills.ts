@@ -575,7 +575,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['rampage', 'defense_buff'],
     output: [
       { kind: 'inflict_status', status: { type: 'rampage', duration: 3 } },
-      { kind: 'inflict_status', status: { type: 'defense_buff', amount: -29, duration: 3 } },
+      { kind: 'inflict_status', status: { type: 'defense_buff', amount: -29, growthRate: 0.175, duration: 3 } },
     ],
   },
   /** 金吾飞将（吕布主战法）：对敌军单体发动一次猛攻 275%，并使其陷入混乱状态，持续 2 回合（「对混乱/暴走目标优先」条件简化） */
@@ -1930,7 +1930,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     timing: 'battle_start',
     targetMode: 'self',
     tags: ['buff_defense'],
-    output: [{ kind: 'inflict_status', status: { type: 'defense_buff', amount: 28, duration: 999 }, target: 'self' }],
+    output: [{ kind: 'inflict_status', status: { type: 'defense_buff', amount: 28, growthRate: 0.35, duration: 999 }, target: 'self' }],
   },
   /** 强攻兵法（C 被动·battle_start）：使自身攻击属性提高 28（受谋略影响，取基值） */
   qianggong_bingfa: {
@@ -1942,7 +1942,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     timing: 'battle_start',
     targetMode: 'self',
     tags: ['buff_attack'],
-    output: [{ kind: 'inflict_status', status: { type: 'attack_buff', amount: 28, duration: 999 }, target: 'self' }],
+    output: [{ kind: 'inflict_status', status: { type: 'attack_buff', amount: 28, growthRate: 0.35, duration: 999 }, target: 'self' }],
   },
   /** 速战兵法（C 被动·battle_start）：使自身速度属性提高 28（受谋略影响，取基值） */
   suzhan_bingfa: {
@@ -1954,7 +1954,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     timing: 'battle_start',
     targetMode: 'self',
     tags: ['buff_speed'],
-    output: [{ kind: 'inflict_status', status: { type: 'speed_buff', amount: 28, duration: 999 }, target: 'self' }],
+    output: [{ kind: 'inflict_status', status: { type: 'speed_buff', amount: 28, growthRate: 0.35, duration: 999 }, target: 'self' }],
   },
   /** 坚守突击（D 被动·battle_start）：使自身攻击、防御属性提高 24 */
   jianshou_tuji: {
@@ -2988,7 +2988,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['taunt', 'debuff_attack'],
     output: [
       { kind: 'inflict_status', status: { type: 'taunt', duration: 2, targetId: '' } },
-      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -39, duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -39, growthRate: 0.05, duration: 2 } },
     ],
   },
   /** 谨言（D 主动）：使友军全体受到策略攻击的伤害降低 16%（取基值），持续 2 回合 */
@@ -4190,7 +4190,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         troopTypes: ['cavalry'],
         status: {
           type: 'damage_boost',
-          rate: 0.36,
+          rate: 0.36, growthRate: 0.2,
           duration: 2,
           direction: 'caused',
           damageSource: 'basic',
@@ -6169,7 +6169,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         targetSide: 'self',
         status: {
           type: 'damage_boost',
-          rate: 0.2,
+          rate: 0.2, growthRate: 0.125,
           duration: 2,
           direction: 'caused',
           skillTypes: ['active'],
@@ -6275,7 +6275,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         },
       },
       // ② 敌军群体 1-2 目标：额外策略攻击 197%（受谋略，成长率留空）
-      { kind: 'strategy_damage', rate: 197, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 197, growthRate: 1.9, strategyScaled: true },
     ],
   },
 
@@ -6774,15 +6774,15 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'defense_buff', 'strategy_buff', 'debuff_defense', 'debuff_strategy'],
     output: [
       // ① 策略攻击 136%（受谋略未确认 → 基值）
-      { kind: 'strategy_damage', rate: 136, strategyScaled: true, targetMode: 'group', groupCount: 2 },
+      { kind: 'strategy_damage', rate: 136, growthRate: 1.45, strategyScaled: true, targetMode: 'group', groupCount: 2 },
       // ② 吸取：敌军**同一批目标** −24 防御 / −24 谋略（applyAll = 同目标同时施加两条）
       {
         kind: 'inflict_status',
         sameTargetsAsLastDamage: true,
         applyAll: true,
         status: [
-          { type: 'defense_buff', amount: -24, duration: 2, strategyScaled: true },
-          { type: 'strategy_buff', amount: -24, duration: 2, strategyScaled: true },
+          { type: 'defense_buff', amount: -24, growthRate: 0.175, duration: 2, strategyScaled: true },
+          { type: 'strategy_buff', amount: -24, growthRate: 0.175, duration: 2, strategyScaled: true },
         ],
       },
       // ③ 附加于友军群体（有效距离内 2 目标，不含自身）＋24 防御 / ＋24 谋略
@@ -6989,7 +6989,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         lockedSide: 'ally',
         status: {
           type: 'damage_boost',
-          rate: 0.22,
+          rate: 0.22, growthRate: 0.075,
           direction: 'caused',
           strategyScaled: true,
           duration: 1,
@@ -7163,7 +7163,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'inflict_status',
         status: {
           type: 'damage_boost',
-          rate: 0.25,
+          rate: 0.25, growthRate: 0.125,
           duration: 999,
           direction: 'caused',
           attackScaled: true,
@@ -7564,7 +7564,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       {
         kind: 'inflict_status',
         target: 'self',
-        status: { type: 'damage_reduce', rate: 0.3, duration: 999, defenseScaled: true },
+        status: { type: 'damage_reduce', rate: 0.3, growthRate: 0.1, duration: 999, defenseScaled: true },
       },
       // ② 前 2 回合援护友军全体（官方口径「为其抵挡普通攻击」；cover 挂自身 = 自己代为承受）
       { kind: 'inflict_status', target: 'self', status: { type: 'cover', duration: 2 } },
@@ -7911,7 +7911,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'rampage', 'damage_boost'],
     output: [
       // ① 追击主段：对普攻目标再次发动策略攻击 130%（受谋略属性影响，成长率官方未给 → 按基值不缩放）
-      { kind: 'strategy_damage', rate: 130, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 130, growthRate: 1.1, strategyScaled: true },
       // ② 50% 使距离 3 以内随机敌军单体暴走 1 回合（战法级 range 生效）
       { kind: 'inflict_status', chance: 0.5, targetSide: 'enemy', targetMode: 'random_single', status: { type: 'rampage', duration: 1 } },
       // ③ 每次发动后自身策略伤害 +5%（同源显式叠层累加，满 6 层封顶；首次那一击在段②之前结算故不吃加成）
@@ -8090,9 +8090,9 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // 代价：自身+友军攻击最低者 下一次行动时进入怯战（pendingNextAct）
       { kind: 'inflict_status', targetSide: 'ally', targetPick: 'lowest_attack_ally', status: { type: 'cowardice', duration: 1, pendingNextAct: true } },
       // 我军群体受到攻击伤害 −20%（受谋略）可叠 1 次（2 层），持续 2 回合
-      { kind: 'inflict_status', targetSide: 'ally', targetMode: 'group', groupCount: [2, 3], status: { type: 'damage_reduce', rate: 0.2, duration: 2, damageType: 'physical', strategyScaled: true, stack: true, maxStacks: 2 } },
+      { kind: 'inflict_status', targetSide: 'ally', targetMode: 'group', groupCount: [2, 3], status: { type: 'damage_reduce', rate: 0.2, growthRate: 0.1, duration: 2, damageType: 'physical', strategyScaled: true, stack: true, maxStacks: 2 } },
       // 我军群体下 2 次造成策略伤害 +30%（受谋略）
-      { kind: 'inflict_status', targetSide: 'ally', targetMode: 'group', groupCount: [2, 3], status: { type: 'damage_boost', rate: 0.3, duration: 999, direction: 'caused', damageType: 'strategy', charges: 2, strategyScaled: true } },
+      { kind: 'inflict_status', targetSide: 'ally', targetMode: 'group', groupCount: [2, 3], status: { type: 'damage_boost', rate: 0.3, growthRate: 0.225, duration: 999, direction: 'caused', damageType: 'strategy', charges: 2, strategyScaled: true } },
     ],
   },
   /**
@@ -8212,7 +8212,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['heal', 'damage_boost', 'damage'],
     // ① 我军全体「受到恢复效果提升 10%」（受谋略，成长率未确认 → 基值），整场常驻
     initialOutput: [
-      { kind: 'inflict_status', status: { type: 'heal_boost', rate: 0.1, duration: 999, strategyScaled: true } },
+      { kind: 'inflict_status', status: { type: 'heal_boost', rate: 0.1, growthRate: 0.05, duration: 999, strategyScaled: true } },
     ],
     // ② 每当我军武将受到一次恢复效果 → 对被恢复者叠 1 层「造成本战法策略伤害 +10%」（受谋略，上限 15 层）
     onHeal: {
@@ -8876,7 +8876,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'inflict_status',
         status: {
           type: 'damage_boost',
-          rate: 0.4,
+          rate: 0.4, growthRate: 0.175,
           duration: 999,
           direction: 'caused',
           damageType: 'strategy',
@@ -9170,7 +9170,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'damage_boost'],
     output: [
       // ① 敌军群体（2 目标）策略攻击 240%（受谋略未确认 → 基值）
-      { kind: 'strategy_damage', rate: 240, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 240, growthRate: 2.75, strategyScaled: true },
       // ② 友军群体（2 目标）「受到下 1-2 次策略攻击的伤害大幅降低」（极大值 −9999%，只吃策略攻击）
       {
         kind: 'inflict_status',
@@ -9454,7 +9454,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'inflict_status',
         targetSide: 'ally',
         targetMode: 'all',
-        status: { type: 'damage_reduce', rate: 0.32, duration: 2, defenseScaled: true },
+        status: { type: 'damage_reduce', rate: 0.32, growthRate: 0.25, duration: 2, defenseScaled: true },
       },
     ],
     // ③ 第 3 回合：我军全体造成的所有伤害大幅降低（极大值 −9999%）
@@ -10840,7 +10840,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           troopTypes: ['cavalry'],
           status: {
             type: 'defense_buff',
-            amount: 10,
+            amount: 10, growthRate: 0.05,
             duration: 999,
             speedScaled: true,
             stack: true,
@@ -10871,8 +10871,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'debuff_attack', 'debuff_strategy'],
     output: [
       { kind: 'physical_damage', rate: 209 },
-      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -56, duration: 2, speedScaled: true } },
-      { kind: 'inflict_status', status: { type: 'strategy_buff', amount: -56, duration: 2, speedScaled: true } },
+      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -56, growthRate: 0.2, duration: 2, speedScaled: true } },
+      { kind: 'inflict_status', status: { type: 'strategy_buff', amount: -56, growthRate: 0.2, duration: 2, speedScaled: true } },
     ],
   },
 
@@ -10921,7 +10921,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage', 'siege'],
     output: [
-      { kind: 'strategy_damage', rate: 230, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 230, growthRate: 2.25, strategyScaled: true },
       { kind: 'inflict_status', status: { type: 'siege', duration: 1 } },
     ],
   },
