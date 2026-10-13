@@ -445,7 +445,8 @@ describe('持节镇西 × 举贤决机（汉荀彧）：属性提升「之前」
     const heals = juxianHeals(ctx);
     expect(heals).toHaveLength(1);
     expect(heals[0].targetId).toBe('ally');
-    expect(heals[0].amount).toBe(calcHealAmount(xy.troops, 60)); // 恢复率 60% 按施法者兵力（成长率留空）
+    // 恢复率 60% 受谋略成长：包内反推 growthRate 0.6（f12=120）→ scaledValue(60, 0.6, 谋略) ≈ 130.2
+    expect(heals[0].amount).toBe(280);
     const triggers = juxianTriggers(ctx);
     expect(triggers).toHaveLength(1);
     expect(triggers[0]).toMatchObject({ targetId: 'ally', success: true, rate: 100, baseRate: 100 });

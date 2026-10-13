@@ -3469,7 +3469,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       damageKind: 'strategy',
       applyTo: 'source',
       sourceMaxDistance: 5,
-      output: [{ kind: 'strategy_damage', rate: 180, strategyScaled: false, growthRate: 0 }],
+      output: [{ kind: 'strategy_damage', rate: 180, strategyScaled: false, growthRate: 1.5 }],
     },
     output: [],
   },
@@ -3584,7 +3584,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     extraByTroopRatio: {
       cond: { below: 60 },
       output: [
-        { kind: 'strategy_damage', rate: 76, strategyScaled: true, growthRate: 0, targetMode: 'random_single', chance: 0.6 },
+        { kind: 'strategy_damage', rate: 76, strategyScaled: true, growthRate: 0.7, targetMode: 'random_single', chance: 0.6 },
       ],
     },
     output: [
@@ -3615,7 +3615,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       maxTriggers: 3,
       applyTo: 'victim',
       output: [
-        { kind: 'heal', rate: 200, strategyScaled: true, growthRate: 0 },
+        { kind: 'heal', rate: 200, strategyScaled: true, growthRate: 2.25 },
         { kind: 'inflict_status', status: { type: 'attack_buff', amount: 30, duration: 999 } },
         { kind: 'inflict_status', status: { type: 'strategy_buff', amount: 30, duration: 999 } },
       ],
@@ -6111,7 +6111,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['panic', 'siege', 'heal'],
     output: [
       // ① 恐慌 DoT：134%（受谋略，成长率留空），持续 2 回合
-      { kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 134, growthRate: 0 } },
+      { kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 134, growthRate: 1.5 } },
       // ② 士气一般或低落（≤100）→ 追加围困 2 回合（恐慌 / 围困共用官方那句「持续 2 回合」）
       {
         kind: 'morale_branch',
@@ -6121,7 +6121,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         low: [{ kind: 'inflict_status', status: { type: 'siege', duration: 2 } }],
       },
       // ③ 自身恢复 98%（受谋略，成长率留空）
-      { kind: 'heal', rate: 98, strategyScaled: true, growthRate: 0, target: 'self' },
+      { kind: 'heal', rate: 98, strategyScaled: true, growthRate: 1.15, target: 'self' },
       // ④ 友军单体恢复 98%（不含自身；单体 = 距离内均匀随机）
       {
         kind: 'heal',
@@ -6221,7 +6221,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // 第 1 回合起：恐慌 34%（受谋略，成长率留空），至战斗结束
       {
         atRound: 1,
-        output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 999, rate: 34, growthRate: 0 } }],
+        output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 999, rate: 34, growthRate: 0.1 } }],
       },
       // 第 3 回合起：燃烧 41%
       {
@@ -6231,7 +6231,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // 第 5 回合起：妖术 44%
       {
         atRound: 5,
-        output: [{ kind: 'inflict_status', status: { type: 'sorcery', duration: 999, rate: 44, growthRate: 0 } }],
+        output: [{ kind: 'inflict_status', status: { type: 'sorcery', duration: 999, rate: 44, growthRate: 0.15 } }],
       },
     ],
   },
@@ -6309,7 +6309,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         victim: 'ally',
         sign: 'up',
         rate: 0.4,
-        output: [{ kind: 'heal', rate: 60, strategyScaled: true, growthRate: 0 }],
+        output: [{ kind: 'heal', rate: 60, strategyScaled: true, growthRate: 0.6 }],
       },
       // 敌军全体被施加属性下降 → 40% 一次策略伤害 100%（受谋略，成长率留空）
       {
@@ -6603,11 +6603,11 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // ① 引爆敌军全体上由本战法留下的条件妖术（无存量时空转）
       { kind: 'detonate_sorcery_marks' },
       // ② 策略攻击 155%（受谋略未确认 → 基值不缩放）
-      { kind: 'strategy_damage', rate: 155, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 155, growthRate: 1.75, strategyScaled: true },
       // ③ 条件妖术：受击触发一次妖术伤害 130%（受谋略未确认 → 基值），最多 3 次、持续 3 回合
       {
         kind: 'inflict_status',
-        status: { type: 'sorcery', duration: 3, rate: 130, growthRate: 0, onHurt: true, charges: 3 },
+        status: { type: 'sorcery', duration: 3, rate: 130, growthRate: 1.5, onHurt: true, charges: 3 },
       },
     ],
   },
@@ -6696,7 +6696,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             [
               {
                 kind: 'strategy_damage',
-                rate: 100,
+                rate: 100, growthRate: 0.5,
                 strategyScaled: true,
                 targetMode: 'group',
                 groupCount: 2,
@@ -6856,7 +6856,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // ② 谋略最高友军（含自身）代打策略 150%（受谋略未确认 → 基值）+ 按自身当前兵力恢复
       {
         kind: 'strategy_damage',
-        rate: 150,
+        rate: 150, growthRate: 1.25,
         strategyScaled: true,
         attacker: 'highest_strategy_ally',
         targetMode: 'random_single',
@@ -7054,7 +7054,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'heal',
         rate: 85,
         strategyScaled: true,
-        growthRate: 0,
+        growthRate: 0.8,
         targetSide: 'ally',
         targetMode: 'group',
         groupCount: 2,
@@ -7209,7 +7209,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       endRound: 4,
       applyTo: 'victim',
       output: [
-        { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0, target: 'self' },
+        { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0.8, target: 'self' },
         {
           kind: 'inflict_status',
           status: { type: 'strategy_buff', amount: 15, duration: 999, strategyScaled: true, growthRate: 0, stack: true },
@@ -7229,7 +7229,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           kind: 'strategy_damage',
           rate: 140,
           strategyScaled: true,
-          growthRate: 0,
+          growthRate: 1.4,
           chance: 0.6,
           requireTargetStrategyBelowSelf: true,
         },
@@ -7355,21 +7355,21 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             targetSide: 'ally',
             targetMode: 'all',
             requireGender: 'male',
-            status: { type: 'attack_buff', amount: 40, duration: 999, strategyScaled: true, growthRate: 0 },
+            status: { type: 'attack_buff', amount: 40, duration: 999, strategyScaled: true, growthRate: 0.225 },
           },
           {
             kind: 'inflict_status',
             targetSide: 'ally',
             targetMode: 'all',
             requireGender: 'male',
-            status: { type: 'defense_buff', amount: 40, duration: 999, strategyScaled: true, growthRate: 0 },
+            status: { type: 'defense_buff', amount: 40, duration: 999, strategyScaled: true, growthRate: 0.225 },
           },
           {
             kind: 'inflict_status',
             targetSide: 'ally',
             targetMode: 'all',
             requireGender: 'female',
-            status: { type: 'strategy_buff', amount: 40, duration: 999, strategyScaled: true, growthRate: 0 },
+            status: { type: 'strategy_buff', amount: 40, duration: 999, strategyScaled: true, growthRate: 0.225 },
           },
           {
             kind: 'inflict_status',
@@ -7631,7 +7631,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             kind: 'heal',
             rate: 120,
             strategyScaled: true,
-            growthRate: 0,
+            growthRate: 0.8,
             targetSide: 'ally',
             targetPick: 'lowest_troops_ally',
             attachStatus: { type: 'damage_reduce', rate: 0.15, duration: 1, strategyScaled: true },
@@ -7645,7 +7645,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         outputs: [
           {
             kind: 'strategy_damage',
-            rate: 120,
+            rate: 120, growthRate: 0.8,
             strategyScaled: true,
             targetPick: 'lowest_troops_in_range',
           },
@@ -7697,7 +7697,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'heal',
         rate: 157,
         strategyScaled: true,
-        growthRate: 0,
+        growthRate: 1.525,
         targetSide: 'ally',
         targetMode: 'group',
         groupCount: 2,
@@ -8015,9 +8015,9 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
               sameTargetsAsLastDamage: true,
               applyAll: true,
               status: [
-                { type: 'attack_buff', amount: -40, duration: 2, attackScaled: true },
-                { type: 'defense_buff', amount: -40, duration: 2, attackScaled: true },
-                { type: 'strategy_buff', amount: -40, duration: 2, attackScaled: true },
+                { type: 'attack_buff', amount: -40, growthRate: 0.125, duration: 2, attackScaled: true },
+                { type: 'defense_buff', amount: -40, growthRate: 0.125, duration: 2, attackScaled: true },
+                { type: 'strategy_buff', amount: -40, growthRate: 0.125, duration: 2, attackScaled: true },
               ],
             },
             {
@@ -8041,9 +8041,9 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
               sameTargetsAsLastDamage: true,
               applyAll: true,
               status: [
-                { type: 'attack_buff', amount: -80, duration: 2, attackScaled: true },
-                { type: 'defense_buff', amount: -80, duration: 2, attackScaled: true },
-                { type: 'strategy_buff', amount: -80, duration: 2, attackScaled: true },
+                { type: 'attack_buff', amount: -80, growthRate: 0.25, duration: 2, attackScaled: true },
+                { type: 'defense_buff', amount: -80, growthRate: 0.25, duration: 2, attackScaled: true },
+                { type: 'strategy_buff', amount: -80, growthRate: 0.25, duration: 2, attackScaled: true },
               ],
             },
           ],
@@ -8320,8 +8320,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'panic', 'burning'],
     output: [
       // ① 第 1 次策略攻击（140%，受谋略）→ 其命中目标获得恐慌 + 燃烧（156%/跳，2 回合）
-      { kind: 'strategy_damage', rate: 140, strategyScaled: true, targetMode: 'random_single' },
-      { kind: 'inflict_status', sameTargetsAsLastDamage: true, status: { type: 'panic', duration: 2, rate: 156, growthRate: 0 } },
+      { kind: 'strategy_damage', rate: 140, growthRate: 1.3, strategyScaled: true, targetMode: 'random_single' },
+      { kind: 'inflict_status', sameTargetsAsLastDamage: true, status: { type: 'panic', duration: 2, rate: 156, growthRate: 1.45 } },
       { kind: 'inflict_status', sameTargetsAsLastDamage: true, status: { type: 'burning', duration: 2, rate: 156, growthRate: 0 } },
       // ② 第 2 次策略攻击（独立重选目标）→ 同样恐慌 + 燃烧
       { kind: 'strategy_damage', rate: 140, strategyScaled: true, targetMode: 'random_single' },
@@ -8782,7 +8782,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     },
     // ③④ 每回合结束：为我军兵力最低单体恢复 2 次兵力（每次独立选靶；恢复率 100% 受谋略未确认 → 基值）
     roundEndOutput: [
-      { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0, targetPick: 'lowest_troops_ally' },
+      { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0.3, targetPick: 'lowest_troops_ally' },
       { kind: 'heal', rate: 100, strategyScaled: true, growthRate: 0, targetPick: 'lowest_troops_ally' },
     ],
     output: [],
@@ -8932,7 +8932,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     // ① 敌军每回合首次吃 DoT：50% → 对其发动一次策略攻击 140%（受谋略未确认 → 基值）
     onDotReceived: {
       rate: 0.5,
-      output: [{ kind: 'strategy_damage', rate: 140, strategyScaled: true }],
+      output: [{ kind: 'strategy_damage', rate: 140, growthRate: 0.8, strategyScaled: true }],
     },
     // ② 第 3 回合起：敌军陷入持续伤害时立即额外引发一次该伤害
     extraTickOnDotApply: { startRound: 3 },
@@ -9225,7 +9225,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         targetMode: 'group',
         groupCount: 2,
         chance: 0.45,
-        status: { type: 'defense_buff', amount: 50, duration: 1, defenseScaled: true },
+        status: { type: 'defense_buff', amount: 50, growthRate: 0.6, duration: 1, defenseScaled: true },
       },
     ],
     // ③ 大营兵力首发跌破 90%/70%/50% → ④ 援护 1 回合 + 下 2 次受到伤害大幅降低（极大值）
@@ -9316,7 +9316,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       ],
       // 以上效果触发后：回合结束时额外恢复我军兵力最低单体 150%（受谋略未确认 → 基值）
       roundEndOutput: [
-        { kind: 'heal', rate: 150, strategyScaled: true, growthRate: 0, targetPick: 'lowest_troops_ally' },
+        { kind: 'heal', rate: 150, strategyScaled: true, growthRate: 0.8, targetPick: 'lowest_troops_ally' },
       ],
     },
   },
@@ -9357,11 +9357,11 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // ① 对友军群体（2 目标）发动一次低伤害攻击 60%（官方原文即为「友军」）
       { kind: 'physical_damage', rate: 60, targetSide: 'ally', targetMode: 'group', groupCount: 2 },
       // ② 恢复自身一定兵力 120%（受谋略未确认 → 基值）
-      { kind: 'heal', target: 'self', rate: 120, strategyScaled: true, growthRate: 0 },
+      { kind: 'heal', target: 'self', rate: 120, strategyScaled: true, growthRate: 1.3 },
       // ③ 对敌军群体（2 目标）策略攻击 160%（受谋略未确认 → 基值），④ 每次发动后本段伤害率 +30%
       {
         kind: 'strategy_damage',
-        rate: 160,
+        rate: 160, growthRate: 1.8,
         strategyScaled: true,
         targetSide: 'enemy',
         targetMode: 'group',
