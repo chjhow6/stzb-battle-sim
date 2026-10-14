@@ -1125,5 +1125,26 @@
     "note": "q5 吴-弓",
     "portrait": "/portraits/h789.jpg",
     "avatar": "/portraits/h789_s.jpg"
+  },
+  "h15": {
+    "heroId": 100015,
+    "officialName": "甄洛",
+    "note": "q5 群-弓",
+    "portrait": "/portraits/h15.jpg",
+    "avatar": "/portraits/h15_s.jpg"
+  },
+  "h4": {
+    "heroId": 100004,
+    "officialName": "蔡文姬",
+    "note": "q5 汉-骑",
+    "portrait": "/portraits/h4.jpg",
+    "avatar": "/portraits/h4_s.jpg"
+  },
+  "h102017": {
+    "heroId": 102017,
+    "officialName": "SP周姬",
+    "note": "q5 吴-步 SP",
+    "portrait": "/portraits/h102017.jpg",
+    "avatar": null
   }
 }

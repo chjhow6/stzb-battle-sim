@@ -1297,7 +1297,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     retainAfterDeath: true,
     roundRepeat: { startRound: 1, endRound: 8, rate: 0.4 },
     tags: ['damage_boost'],
-    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.3, duration: 1, direction: 'caused' } }],
+    output: [{ kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.3, duration: 1, direction: 'caused', strategyScaled: true, growthRate: 0.15 } }],
   },
   /** 双艳（小乔＆大乔主战法）：主动，使敌军群体陷入暴走状态（无差别攻击），攻击距离 -1（攻击距离暂未建模），持续 2 回合 */
   shuangyan: {
@@ -1837,7 +1837,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     range: 0,
     triggerRate: 0.4,
     tags: ['panic'],
-    output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 75, growthRate: 1.0 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 75, growthRate: 0 } }],
   },
   /** 重伤（D 追击）：普攻后对攻击目标再次攻击 115%，并使其攻击属性降低 15，持续 2 回合 */
   zhongshang: {
@@ -2182,8 +2182,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'debuff_attack', 'debuff_strategy'],
     output: [
       { kind: 'strategy_damage', rate: 209, strategyScaled: true, growthRate: 2.175 },
-      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -45, duration: 2 } },
-      { kind: 'inflict_status', status: { type: 'strategy_buff', amount: -45, duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -45, duration: 2, strategyScaled: true, growthRate: 0.25 } },
+      { kind: 'inflict_status', status: { type: 'strategy_buff', amount: -45, duration: 2, strategyScaled: true, growthRate: 0.25 } },
     ],
   },
   /** 折戟强攻（A 主动）：对敌军群体发动一次猛攻 225%，但此后使自身攻击属性降低 50，持续 1 回合 */
@@ -2321,7 +2321,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'debuff_defense'],
     output: [
       { kind: 'strategy_damage', rate: 210, strategyScaled: true, growthRate: 2.25 },
-      { kind: 'inflict_status', status: { type: 'defense_buff', amount: -7.2, duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'defense_buff', amount: -7.2, duration: 2, strategyScaled: true, growthRate: 0.09 } },
     ],
   },
   /** 叫阵（B 主动·发动率满级 40%）：挑衅敌军单体使其攻击自身，同时自身防御属性提高 80，谋略属性提高 40，持续 2 回合 */
@@ -2424,7 +2424,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'debuff_attack'],
     output: [
       { kind: 'strategy_damage', rate: 205, strategyScaled: true, growthRate: 2.25 },
-      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -10, duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -10, duration: 2, strategyScaled: true, growthRate: 0.125 } },
     ],
   },
   /** 破胆（B 主动）：对敌军单体发动一次猛攻 214%，并使其攻击属性降低 30，持续 2 回合 */
@@ -2621,7 +2621,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.3,
     targetMode: 'random_single',
     tags: ['panic'],
-    output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 125, growthRate: 1.0 } }],
+    output: [{ kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 125, growthRate: 0 } }],
   },
   /** 溃堤（C 主动）：对敌军群体发动策略攻击 79.8%，并使其攻击属性降低 10，持续 2 回合 */
   kuidi: {
@@ -2635,7 +2635,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     tags: ['damage', 'debuff_attack'],
     output: [
       { kind: 'strategy_damage', rate: 79.8, strategyScaled: true, growthRate: 0.785 },
-      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -10, duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'attack_buff', amount: -10, duration: 2, strategyScaled: true, growthRate: 0.125 } },
     ],
   },
   /** 火箭（C 主动）：1 回合准备，对敌军群体发动策略攻击 69%，并使其陷入燃烧状态（69%），持续 1 回合 */
@@ -4091,7 +4091,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         {
           kind: 'inflict_status',
           troopTypes: ['archer'],
-          status: { type: 'split', rate: 49, duration: 1, strategyScaled: true },
+          status: { type: 'split', rate: 49, duration: 1, strategyScaled: true, growthRate: 0.175 },
         },
         {
           kind: 'inflict_status',
@@ -4447,6 +4447,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           kind: 'strategy_damage',
           rate: 83,
           strategyScaled: true,
+          growthRate: 0.725,
           targetMode: 'random_single',
           range: 5,
         },
@@ -7753,7 +7754,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       rate: 0.6,
       applyTo: 'source',
       output: [
-        { kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.42, duration: 999, direction: 'caused', defenseScaled: true, charges: 1 } },
+        { kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.42, duration: 999, direction: 'caused', defenseScaled: true, growthRate: 0.25, charges: 1 } },
       ],
     },
     // ② 每回合行动时（出手前）刷新自身「受到所有伤害 −80%」；每受攻击/策略伤害后按 1/5 衰减（decayFifths 5）
@@ -8421,7 +8422,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
   },
 
   /**
-   * 疲兵沮意（XP陆逊·吴弓 h791 主战法）：指挥 S（一类指挥 prep），距离 5，我军群体（推定 2 目标），
+   * 疲兵沮意（XP陆逊·吴弓 h791 主战法）：指挥 S（一类指挥 prep），距离 5，我军群体（三选二），
    * 发动率 --。
    * 满级「每回合开始时，为我军群体叠加 2 层避锐效果，在其受到伤害前，消耗 1 层避锐效果令该次伤害
    *   降低 10.0%（受谋略属性影响），避锐效果生效后有 50% 几率令敌军单体陷入燃烧状态（伤害率 150.0%，
@@ -8430,19 +8431,10 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    * 官方：scripts/skill_extra.json id 200264（指挥 / 距离 5 / 我军群体 / 兵种弓；effect 受到攻击伤害降低;
    *   受到策略攻击伤害降低;燃烧）。来源 https://stzb.163.com/m/skilllist/200264.html
    *
-   * 口径（策略 A，2026-09-20；推定处已标注）：
-   *   ① 目标：官方只写「我军群体」（未写 N）→ 按官方体系惯例取 **2 目标**（`targetMode:'group'`,
-   *      groupCount 2），**推定**；
-   *   ② 「每回合开始时叠加 2 层避锐」→ 一类指挥 + 既有 `roundStartRepeat`（回合前对锁定目标再结算）；
-   *      避锐走**新状态 `avoid_charge`**：层数型吸收，受击前消耗 1 层、令该次伤害降低 perStackRate
-   *      （受谋略，施加时按施法者谋略冻结；成长率未确认 → 基值 10%）；
-   *   ③ 「避锐效果生效后 50%」→ 新引擎件 `CommandSkill.avoidOnConsume`：消耗 1 层时由施法者按
-   *      chance 判定（走士气修正，同 actLayer 口径，**推定**），命中则对**距离内随机敌军单体**结算
-   *      output：燃烧 150%（受谋略，duration 1）+「受到本战法燃烧伤害提升 80%」（`damage_boost`
-   *      direction:'taken' + dotTypes:['burning'] + skillIds:['pibing_juyi'] + `stack:true`，
-   *      **同一目标**、无上限叠加至战斗结束；「加算叠加」为推定；
-   *   ④ 三处「受谋略属性影响」成长系数官方未给 → 一律基值不缩放（avoidCharges / 燃烧 growthRate 0 /
-   *      递增段无属性标注）→ 登记 OFFLINE_MAIN_SKILLS（陆逊下架）。
+   * 口径（用户 2026-10-14 确认）：
+   *   ① 我军群体 = 三选二（`groupCount: 2`，距离内均匀抽，含自身不强制自己）；
+   *   ② 每回合开始叠加 2 层避锐（`roundStartRepeat`，无概率，不吃士气）；避锐 10% 成长 0.1；
+   *   ③ 士气只乘避锐生效后的 50%（`avoidOnConsume.chance`）；燃烧 150% 成长 1.5，递增 80% 固定。
    */
   pibing_juyi: {
     id: 'pibing_juyi',
@@ -8455,7 +8447,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     groupCount: 2,
     targetSide: 'ally',
     tags: ['damage_reduce', 'burning'],
-    // ② 每回合开始（回合前结算）：为我军群体叠加 2 层避锐（每层受击前 −10%，受谋略未确认 → 基值）
+    // 每回合开始：为我军群体叠加 2 层避锐（每层 −10%，成长 0.1；本段无概率，不吃士气）
     roundStartRepeat: {
       output: [
         {
@@ -8831,8 +8823,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     specialDebuffBefore: {
       rate: 0.5,
       output: [
-        { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.3, duration: 1, direction: 'taken', strategyScaled: true } },
-        { kind: 'heal', rate: 65, strategyScaled: true, growthRate: 0, targetSide: 'ally', targetMode: 'random_single' },
+        { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.3, duration: 1, direction: 'taken', strategyScaled: true, growthRate: 0.15 } },
+        { kind: 'heal', rate: 65, strategyScaled: true, growthRate: 0.45, targetSide: 'ally', targetMode: 'random_single' },
       ],
     },
     // ③ 我军全体被施加挑衅/围困/控制时：50% 抵御（整段取消）
@@ -9103,12 +9095,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       // ① 每回合点名：受到所有伤害 +16%（1 级 8%；受谋略未确认 → 基值），可叠加、持续至战斗结束
       takenBoostRate: 16,
       strategyScaled: true,
+      growthRate: 0.075,
       // ⑤ 本回合首次主动伤害 / 首次普攻强制选中点名目标的几率（满级 100%、1 级 50%，走士气修正）
       forceTargetRate: 1,
       // ⑥ 回合内受到 3 次或以上伤害 → 追加一层受伤提升 + 全属性下降
       threshold: 3,
-      // ② 追加时四维各 −12%（1 级 −6%；受谋略未确认 → 基值），可叠加、持续至战斗结束
+      // ② 追加时四维各 −12 点（包内 DIV 100，不是百分比），成长 0.05/点
       punishAttrPercent: 12,
+      punishGrowthRate: 0.05,
     },
   },
 
@@ -9597,7 +9591,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
               kind: 'heal',
               rate: 160,
               strategyScaled: true,
-              growthRate: 0,
+              growthRate: 0.925,
               targetSide: 'ally',
               targetPick: 'lowest_troops_ally',
             },
@@ -9612,6 +9606,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
               kind: 'strategy_damage',
               rate: 120,
               strategyScaled: true,
+              growthRate: 0.8,
               range: 4,
               targetPick: 'lowest_troops_in_range',
             },
@@ -9936,6 +9931,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             duration: 1,
             direction: 'caused',
             defenseScaled: true,
+            growthRate: 0.125,
           },
         },
       ],
@@ -9977,6 +9973,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'strategy_damage',
         rate: 50,
         strategyScaled: true,
+        growthRate: 0.5,
         dotFormula: true,
         targetMode: 'random_single',
       },
@@ -9989,6 +9986,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           duration: 999,
           direction: 'taken',
           strategyScaled: true,
+          growthRate: 0.025,
           dotTypes: ['burning', 'sorcery', 'panic', 'curse', 'ignite'],
           stack: true,
         },
@@ -9997,6 +9995,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'strategy_damage',
         rate: 50,
         strategyScaled: true,
+        growthRate: 0.5,
         dotFormula: true,
         targetMode: 'random_single',
       },
@@ -10009,6 +10008,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           duration: 999,
           direction: 'taken',
           strategyScaled: true,
+          growthRate: 0.025,
           dotTypes: ['burning', 'sorcery', 'panic', 'curse', 'ignite'],
           stack: true,
         },
@@ -10017,6 +10017,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         kind: 'strategy_damage',
         rate: 50,
         strategyScaled: true,
+        growthRate: 0.5,
         dotFormula: true,
         targetMode: 'random_single',
       },
@@ -10029,6 +10030,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           duration: 999,
           direction: 'taken',
           strategyScaled: true,
+          growthRate: 0.025,
           dotTypes: ['burning', 'sorcery', 'panic', 'curse', 'ignite'],
           stack: true,
         },
@@ -10042,7 +10044,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             kind: 'inflict_status',
             targetSide: 'enemy',
             targetMode: 'all',
-            status: { type: 'panic', rate: 120, growthRate: 0, duration: 1 },
+            status: { type: 'panic', rate: 120, growthRate: 1.2, duration: 1 },
           },
         ],
       },
@@ -10054,7 +10056,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             kind: 'inflict_status',
             targetSide: 'enemy',
             targetMode: 'all',
-            status: { type: 'burning', rate: 120, growthRate: 0, duration: 1 },
+            status: { type: 'burning', rate: 120, growthRate: 1.2, duration: 1 },
           },
         ],
       },
@@ -10396,14 +10398,14 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['damage', 'panic'],
     output: [
-      { kind: 'strategy_damage', rate: 160, strategyScaled: true },
+      { kind: 'strategy_damage', rate: 160, strategyScaled: true, growthRate: 1.5 },
       {
         kind: 'inflict_status',
         status: {
           type: 'panic',
           duration: 999,
           rate: 87,
-          growthRate: 0,
+          growthRate: 0.9,
           triggerOnAttrDown: true,
           chargesPerAttr: 4,
         },
@@ -10776,7 +10778,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       damageKind: 'physical',
       rate: 0.5,
       applyTo: 'skill_targets',
-      output: [{ kind: 'strategy_damage', rate: 60, strategyScaled: true }],
+      output: [{ kind: 'strategy_damage', rate: 60, strategyScaled: true, growthRate: 0.5 }],
     },
   },
 
@@ -10955,7 +10957,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetSide: 'enemy',
     tags: ['burning', 'damage_boost'],
     output: [
-      { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 200, growthRate: 0 } },
+      { kind: 'inflict_status', status: { type: 'burning', duration: 1, rate: 200, growthRate: 2.05 } },
       {
         kind: 'inflict_status',
         status: {
@@ -10966,6 +10968,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
           skillTypes: ['active'],
           charges: 1,
           strategyScaled: true,
+          growthRate: 0.1,
         },
       },
     ],
@@ -11388,6 +11391,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
                 kind: 'strategy_damage',
                 rate: 170,
                 strategyScaled: true,
+                growthRate: 1.625,
                 targetSide: 'enemy',
                 targetMode: 'random_single',
               },
@@ -11396,12 +11400,12 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
             [{ kind: 'inflict_status', target: 'self', status: { type: 'evasion', stacks: 2 } }],
             // ③ 恢复自身及友军单体（150%，受谋略）
             [
-              { kind: 'heal', rate: 150, strategyScaled: true, growthRate: 0, target: 'self' },
+              { kind: 'heal', rate: 150, strategyScaled: true, growthRate: 1.125, target: 'self' },
               {
                 kind: 'heal',
                 rate: 150,
                 strategyScaled: true,
-                growthRate: 0,
+                growthRate: 1.125,
                 targetSide: 'ally',
                 targetMode: 'random_single',
                 excludeSelf: true,

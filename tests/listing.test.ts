@@ -39,8 +39,10 @@ describe('暂时下架名单', () => {
 
   it('未确认成长的可学习战法 isLearnableSkillListed=false', () => {
     // 2026-10-13 摘牌后仍在下架的（成长率仍未确认）
-    expect(isLearnableSkillListed('famou')).toBe(false);
-    expect(isLearnableSkillListed('youji')).toBe(false);
+    expect(isLearnableSkillListed('famou')).toBe(true);
+    expect(isLearnableSkillListed('youji')).toBe(true);
+    expect(isLearnableSkillListed('bugong')).toBe(true);
+    expect(isLearnableSkillListed('taoyuanjieyi')).toBe(true);
     // 本批反推确认成长率 → 已摘牌，转为上架
     expect(isLearnableSkillListed('jijiu')).toBe(true);
     expect(isLearnableSkillListed('qixi')).toBe(true);
@@ -65,6 +67,7 @@ describe('暂时下架名单', () => {
       'jinkui_yaolue',
       'mouyi_hongtu',
       'liehuo_fenzhou',
+      'pibing_juyi',
     ];
     for (const id of confirmed) {
       expect(OFFLINE_MAIN_SKILLS[id], `${id} 应已从上架黑名单移除`).toBeUndefined();

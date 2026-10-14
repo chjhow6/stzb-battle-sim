@@ -192,6 +192,7 @@ export function triggerImperialDecrees(ctx: CombatContext): void {
           direction: 'taken',
           stack: true,
           strategyScaled: skill.imperialDecree.strategyScaled,
+          ...(skill.imperialDecree.growthRate !== undefined ? { growthRate: skill.imperialDecree.growthRate } : {}),
         },
       },
     ]);
@@ -265,7 +266,7 @@ function decreePunish(ctx: CombatContext, target: UnitState): void {
       detail: `【${skill.name}】回合内受到 ${cfg.threshold} 次伤害，追加受伤提升与全属性下降`,
     });
     const attr = (type: 'attack_buff' | 'defense_buff' | 'strategy_buff' | 'speed_buff') =>
-      ({ kind: 'inflict_status', status: { type, amount: -cfg.punishAttrPercent, percent: true, duration: 999, strategyScaled: true, stack: true } }) as const;
+      ({ kind: 'inflict_status', status: { type, amount: -cfg.punishAttrPercent, duration: 999, strategyScaled: true, growthRate: cfg.punishGrowthRate ?? 0, stack: true } }) as const;
     executeSkillOutputs(ctx, caster, skill, [target], [
       {
         kind: 'inflict_status',
@@ -276,6 +277,7 @@ function decreePunish(ctx: CombatContext, target: UnitState): void {
           direction: 'taken',
           stack: true,
           strategyScaled: cfg.strategyScaled,
+          ...(cfg.growthRate !== undefined ? { growthRate: cfg.growthRate } : {}),
         },
       },
       attr('attack_buff'),
@@ -8257,6 +8259,9 @@ function executeSkillOutputs(
             } else {
               inflictStatus(ctx, t, create, skill.type, skill.id, caster.general.id);
             }
+          } else if (create.type === 'split' && create.strategyScaled && create.growthRate !== undefined) {
+            const scaled = roundRate(scaledValue(create.rate, create.growthRate, effectiveStat(caster, 'strategy')));
+            inflictStatus(ctx, t, { ...create, rate: scaled }, skill.type, skill.id, caster.general.id);
           } else if (
             (create.type === 'attack_buff' || create.type === 'defense_buff' || create.type === 'strategy_buff' || create.type === 'speed_buff') &&
             ((create.strategyScaled && create.growthRate !== undefined) ||

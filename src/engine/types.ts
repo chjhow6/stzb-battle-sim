@@ -847,7 +847,7 @@ export type CreateStatus =
   | { type: 'curse'; duration: number; rate: number; growthRate: number; sourceStrategy?: number }
   /** 引燃标记（火势风威）：携带者受到下一次伤害时额外引发一次燃烧（rate% 受谋略），触发后移除 */
   | { type: 'ignite'; duration: number; rate: number; growthRate: number; sourceStrategy?: number }
-  | { type: 'split'; duration: number; rate: number; /** 次数型分兵（鱼鳞）：有值时按攻击输出次数消耗，不按回合递减；无 charges 走第 2 组（duration 1 = 只覆盖本次行动） */ charges?: number; /** 受谋略缩放（鱼鳞） */ strategyScaled?: boolean }
+  | { type: 'split'; duration: number; rate: number; /** 次数型分兵（鱼鳞）：有值时按攻击输出次数消耗，不按回合递减；无 charges 走第 2 组（duration 1 = 只覆盖本次行动） */ charges?: number; /** 受谋略缩放（鹤翼） */ strategyScaled?: boolean; /** 分兵伤害率成长/点；施加时按施法者谋略冻结进 rate */ growthRate?: number }
   | { type: 'jump_prep'; duration: number; rate: number }
   /** 下一次造成伤害无视规避（缚父临危）：无 duration——消耗制，不按回合递减 */
   /** 下一次造成伤害无视规避（缚父临危）：duration 仅占位——消耗制，不按回合递减（两个 tick 函数显式跳过） */
@@ -1510,7 +1510,7 @@ export interface CommandSkill extends BaseSkill {
    * 「天子诏令」（XP献帝）：① 每回合开始随机点名一名**敌军单体**，使其「受到所有伤害提升」按份叠加
    * （`takenBoostRate`%，受谋略缩放，持续至战斗结束）；② 本侧每个单位**本回合首次伤害/首次普攻**
    * 按 `forceTargetRate` 判定，命中则强制选中点名目标（无视距离）；③ 回合内该目标累计受到 `threshold` 次
-   * 伤害时追加一层受伤提升 + 全属性下降 `punishAttrPercent`%（受谋略、可叠加、持续至战斗结束）。
+   * 伤害时追加一层受伤提升 + 全属性下降 `punishAttrPercent` 点（受谋略、可叠加、持续至战斗结束）。
    */
   imperialDecree?: {
     /** 每回合点名：受到所有伤害提升（百分点，1 级减半）；strategyScaled + growthRate 给定时按施法者谋略缩放 */
@@ -1521,8 +1521,10 @@ export interface CommandSkill extends BaseSkill {
     forceTargetRate: number;
     /** 回合内点名目标累计受击次数阈值（3） */
     threshold: number;
-    /** 阈值追加：全属性下降（百分点，受谋略，可叠加） */
+    /** 阈值追加：全属性下降点数（包内 f0=201–204、DIV 100；可叠加）。成长见 punishGrowthRate */
     punishAttrPercent: number;
+    /** 全属性下降成长/点（受谋略）。缺省不缩放 */
+    punishGrowthRate?: number;
   };
   /**
    * 我军全体士气提升时触发（佐命晋武，裴秀）：**本侧任意单位**被施加正士气提升（morale_boost

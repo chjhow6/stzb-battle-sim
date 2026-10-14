@@ -75,12 +75,11 @@ beforeEach(() => {
 
 describe('配将池「显示下架武将」开关', () => {
   it('默认只显示上架武将，下架将不进池', () => {
-    // 基线口径（2026-10-13 七批摘牌后）：上架 152 = 147 + 4 + 1
-    //（其徐如林·XP司马懿 h807 值/成长/机制全齐）
-    //（qingqiu_meihuo 妲己 / huanshi_xuchi 沮授 / fengling_hushu 马岱 / cijian_changqu 刘禅 —— 四者主战法成长率均经包内自证通过）
-    expect(HEROES.length).toBe(152);
-    // 摘 5 张牌后下架将 14 → 9（任一时点仍应保有近两位数下架集，防「全量误摘」）
-    expect(OFFLINE_HEROES.length).toBeGreaterThanOrEqual(9);
+    // 基线口径（2026-10-14 包内成长率回填）：上架 160 = 152 + 8
+    // 王昭君 / 袁术 / 马谡 / XP丁奉 / 严颜 / XP程昱 / XP献帝 / XP陆逊
+    expect(HEROES.length).toBe(160);
+    // 仍下架：XP孟获（兵种分支）
+    expect(OFFLINE_HEROES.length).toBe(1);
     expect(SLOTTED_HEROES.length).toBe(HEROES.length + OFFLINE_HEROES.length);
     expect(cards(ctx.pool).length).toBe(HEROES.length);
     // 本批新增的 7 将里，只有甘宁（侵掠如火）/吕姬（缚父临危）上架
@@ -88,10 +87,11 @@ describe('配将池「显示下架武将」开关', () => {
     expect(cardOf(ctx.pool, 'h634')).toBeDefined();
     // 本轮摘牌回池：h562 = 地公将军（digong_jiangjun，包内反推成长率 strategy 1.45 / 属性 0.175）
     expect(cardOf(ctx.pool, 'h562')).toBeDefined();
-    // 仍下架的 4 将默认不可见（池子里连卡都没有）—— h815 = XP孟获（manwang_yuzhong 兵种分支未建模，保留）
-    for (const id of ['h790', 'h788', 'h815']) {
-      expect(cardOf(ctx.pool, id), `${id} 不该出现在默认池`).toBeUndefined();
+    for (const id of ['h676', 'h790', 'h799', 'h788', 'h631', 'h787', 'h795', 'h791']) {
+      expect(cardOf(ctx.pool, id), `${id} 本批应回池`).toBeDefined();
     }
+    // h815 = XP孟获（兵种分支未建模）
+    expect(cardOf(ctx.pool, 'h815'), 'h815 不该出现在默认池').toBeUndefined();
   });
 
   it('勾选后并入下架武将，带「下架」角标与原因 tooltip', () => {
