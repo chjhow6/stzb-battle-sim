@@ -7540,8 +7540,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    * 则使友军攻击最高单体有 60.0% 几率对敌军群体发动一次攻击（伤害率 120.0%）。
    * 官方：scripts/skill_extra.json id 200297（被动 A / 距离 5 / 自己 / 兵种弓步骑；
    *   1 级 减伤 15% / 攻击 30%・60%）。来源 https://stzb.163.com/m/skilllist/200297.html
-   * 入档判断：**下架** —— 减伤段「受防御属性影响」而官方未给成长系数 → 按基值不缩放
-   *   （`defenseScaled` 标记在、`growthRate` 缺）+ 登记 OFFLINE_MAIN_SKILLS，待反解确认后移出。
+   * 入档判断：**上架**。减伤成长 0.1 已由包内确认；友军攻击最高不含自身；减伤拆攻击 / 谋略两段。
    * 引擎配套：
    *   ① 减伤段复用既有 `damage_reduce`；**新增 `damage_reduce.defenseScaled`**（受防御缩放，公式同受谋略，
    *      属性换生效防御；`growthRate` 缺省时不缩放、用基值）；
@@ -7551,12 +7550,11 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    *      走 `ctx.hurtEveryCounters`）触发一次 output；攻击段用 `physical_damage.attacker:'highest_attack_ally'`
    *      借我军攻击最高单体出手（复用西陵克晋的代打口径，杀伤统计 creditToId 归孟获），
    *      段级 `chance: 0.6` 走士气修正判定，`targetMode:'group'` + groupCount 2 = 敌军群体 2 目标。
-   * 口径（推定 · 待复核）：
-   *   ④ 「友军攻击最高单体」按仓库既有 `highestStatAlly` 口径**含施法者自身**（与西陵克晋
-   *      「我军攻击属性最高的武将」同源；官方对含己场景用「我军」时亦有此先例）；
-   *   ⑤ 官方兵种分支（「若友军兵种为蛮兵/藤甲兵/象兵…」）引擎未建模特殊兵种（TroopType 仅
-   *      cavalry/infantry/archer）→ **该分支未实现**，需用户确认兵种口径后再补；
-   *   ⑥ notes 建议按 desc 全伤害单段（官方 effect 标签拆「受攻击/受策略」两段，此处按描述单段实现）。
+   * 口径：
+   *   ④ 「友军攻击最高单体」不含施法者自身（`attackerExcludeSelf`）。没有其他友军则本段不发动。
+   *   ⑤ 兵种分支：友军二级兵种为蛮兵/藤甲兵/象兵时，该友军吃自身减伤的一半（攻击、谋略各 15%、成长 0.05、
+   *      受防御、3 回合），对其援护改为 4 回合；攻击最高者恰是这三兵种时，代打改为必定且伤害率 +120。
+   *   ⑥ 减伤拆成攻击、谋略两段，各 30%（受防御，成长 0.1）。
    */
   manwang_yuzhong: {
     id: 'manwang_yuzhong',
@@ -7568,11 +7566,16 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     targetMode: 'self',
     tags: ['damage_reduce', 'cover', 'damage'],
     output: [
-      // ① 自身受到的所有伤害降低 30%（受防御属性影响，成长率未确认 → 基值不缩放）
+      // ① 受到攻击 / 谋略伤害各降低 30%（受防御，成长 0.1）
       {
         kind: 'inflict_status',
         target: 'self',
-        status: { type: 'damage_reduce', rate: 0.3, growthRate: 0.1, duration: 999, defenseScaled: true },
+        status: { type: 'damage_reduce', rate: 0.3, growthRate: 0.1, duration: 999, defenseScaled: true, damageType: 'physical' },
+      },
+      {
+        kind: 'inflict_status',
+        target: 'self',
+        status: { type: 'damage_reduce', rate: 0.3, growthRate: 0.1, duration: 999, defenseScaled: true, damageType: 'strategy' },
       },
       // ② 前 2 回合援护友军全体（官方口径「为其抵挡普通攻击」；cover 挂自身 = 自己代为承受）
       { kind: 'inflict_status', target: 'self', status: { type: 'cover', duration: 2 } },
@@ -7584,6 +7587,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         {
           kind: 'physical_damage',
           attacker: 'highest_attack_ally',
+          attackerExcludeSelf: true,
           rate: 120,
           targetMode: 'group',
           groupCount: 2,

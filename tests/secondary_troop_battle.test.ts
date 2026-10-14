@@ -3,7 +3,7 @@
  *
  * 覆盖用户 2026-09-20 审定的口径：
  *  1. 攻击距离修正：长弓兵 +1、死士 −1
- *  2. 造成伤害加成：弩兵 +8%、长弓兵前 4 回合 +10%
+ *  2. 造成伤害加成：弩兵 +8%；长弓兵无轻装易伤
  *  3. 长枪兵改写相克：骑打枪 −30%、枪打骑 +30%、弓打枪 +30%、枪打弓 −30%
  *  4. 象兵：不受任何指挥战法效果影响（敌我正负一视同仁）
  *  5. 通用特性：齐射/迂回/守备/难测/出奇/利刃/地利
@@ -132,11 +132,12 @@ describe('二级兵种：造成伤害加成（弩兵 / 长弓兵）', () => {
     expect(modList(hit).some((m) => m.skillId === 'troop_trait' && m.rate > 0)).toBe(true);
   });
 
-  it('长弓兵减伤（轻装 +8%）生效：受到伤害更高', () => {
+  it('长弓兵无轻装易伤：受击没有 troop_trait 减伤', () => {
     const atk = () => makeGeneral('a', 'infantry', { speed: 200, attack: 250 });
-    const plain = runDuel(atk(), makeGeneral('d', 'archer', { speed: 1 }), 606);
     const bow = runDuel(atk(), makeGeneral('d', 'archer', { speed: 1, secondaryTroop: '长弓兵' }), 606);
-    expect(totalTaken(bow, 'd')).toBeGreaterThan(totalTaken(plain, 'd'));
+    const hits = bow.events.filter((e): e is HitEvent => e.type === 'attack_hit' && e.targetId === 'd');
+    expect(hits.length).toBeGreaterThan(0);
+    expect(hits.every((h) => !h.modifiers?.reduce.some((s) => s.skillId === 'troop_trait'))).toBe(true);
   });
 });
 

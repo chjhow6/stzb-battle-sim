@@ -198,6 +198,8 @@ export type SkillOutput =
        * 对距离 `range`（缺省战法 range）内敌军单体打攻击；杀伤 sourceId 为该单位。
        */
       attacker?: 'lowest_strategy_ally' | 'recipient' | 'highest_attack_ally';
+      /** 代打「友军攻击最高」时排除施法者自身（蛮王御众）。缺省含自身。 */
+      attackerExcludeSelf?: boolean;
       /**
        * 代打者结算后按**代打者自身当前兵力**恢复（西陵克晋「并各自恢复一定兵力」）：
        * 立即型急救（非状态，与恢复类战法不冲突），恢复量 = calcHealAmount(代打者当前兵力, rate)。

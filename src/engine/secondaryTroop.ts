@@ -11,30 +11,19 @@
  */
 import type { Position, TroopType } from './types';
 
-/** 二级兵种（13 个常规 + 5 个武将专属） */
+/**
+ * 二级兵种。名单与专属特性来自包内 `tb_cfg_hero_type.bin` / `tb_cfg_hero_type_feature.bin`
+ * （特性 id = 1000 + 兵种 id + (兵种 id 末位) × 100，末位 1 弓 / 2 步 / 3 骑）。
+ * 地图结算（劫粮、征兵、水域、枯竭地、国土）不进战斗。
+ */
 export type SecondaryTroopType =
-  // 弓兵系
-  | '长弓兵'
-  | '弩兵'
-  | '死士'
-  // 步兵系
-  | '重步兵'
-  | '长枪兵'
-  | '禁卫'
-  | '蛮兵'
-  | '藤甲兵'
-  // 骑兵系
-  | '重骑兵'
-  | '轻骑兵'
-  | '铁骑兵'
-  | '弓骑兵'
-  | '象兵'
-  // 武将专属（占位：转换关系入库，专属特性数值待补）
-  | '解烦兵'
-  | '白毦兵'
-  | '西凉铁骑'
-  | '白衣死士'
-  | '木牛流马';
+  | '长弓兵' | '弩兵' | '死士' | '连弩兵' | '火矢兵' | '无当飞军' | '乡勇弓手'
+  | '丹阳兵' | '黄巾长弓' | '解烦兵' | '白波长弓' | '黑山长弓' | '耕战营' | '青囊兵'
+  | '重步兵' | '长枪兵' | '禁卫' | '藤甲兵' | '蛮兵' | '飞熊军' | '舷卫'
+  | '黄巾兵' | '大戟士' | '白毦兵' | '乡勇步卒' | '白波轻步' | '黑山轻步' | '陷阵营'
+  | '黄巾轻步' | '重垣军' | '白衣死士'
+  | '重骑兵' | '轻骑兵' | '弓骑兵' | '铁骑兵' | '象兵' | '羽林骑' | '白马义从'
+  | '虎豹骑' | '乡勇轻骑' | '黄巾轻骑' | '白波轻骑' | '黑山轻骑' | '西凉铁骑' | '伏龙军' | '木牛流马';
 
 /** 兵系（通用特性池的归属维度） */
 export type TroopFamily = '步兵系' | '弓兵系' | '骑兵系';
@@ -94,113 +83,221 @@ export interface SecondaryTroopDef {
    * 官方：弓骑兵「骑射」→ 战法距离 +1（target.ts `skillRangeOf`）。
    */
   skillRangeMod?: number;
-  /** 永久四维加减（点数，直接并入 effectiveStat）：死士 攻/防/谋 +18、轻骑兵 速度 +15 */
+  /** 永久四维加减（点数）：死士 攻/防/谋 +18、轻骑兵速度 +15、重步兵速度 −15 */
   statMod?: Partial<Record<'attack' | 'defense' | 'strategy' | 'speed', number>>;
+  /** 四维百分比（黄巾兵涣散 −10）。加在点数之后。 */
+  statPct?: number;
+  /** 前 N 回合优先行动（长弓先发、白衣奇袭）。不限攻守。 */
+  priorityRounds?: number;
+  /** 造成所有伤害加成 */
+  caused?: number;
+  /** 受到所有伤害降低 */
+  taken?: number;
+  /** 受到主动战法伤害降低（重步披甲 12%） */
+  takenActive?: number;
+  /** 本回合尚未行动时额外减伤（重步披甲「行动前额外 8%」） */
+  takenBeforeAct?: number;
+  /** 受到追击战法伤害降低 */
+  takenPursuit?: number;
+  /** 除火攻/燃烧外的减伤（藤甲 30%） */
+  takenNonBurn?: number;
+  /** 持续性伤害造成加成（丹阳观隙、火矢） */
+  dotCaused?: number;
+  /** 前 N 回合受到所有伤害降低 */
+  takenRounds?: { rounds: number; rate: number };
+  /** 控制状态下受到伤害降低，四类不可叠加（铁骑不屈） */
+  takenInControl?: number;
 }
 
 /** 二级兵种注册表（code 与中文名双向可查） */
 export const SECONDARY_TROOPS: Record<SecondaryTroopType, SecondaryTroopDef> = {
   长弓兵: {
-    code: '11',
-    family: '弓兵系',
-    exclusiveTrait: ['远离：前 4 回合造成所有伤害 +10%，第 1 回合进入洞察状态', '先发：作为防守方时前 2 回合优先行动'],
-    exclusive: false,
-    rangeMod: 1,
+    code: '11', family: '弓兵系', exclusive: false, rangeMod: 1, priorityRounds: 2,
+    exclusiveTrait: ['先发：前 2 回合优先行动', '远离：攻击距离 +1'],
   },
   弩兵: {
-    code: '21',
-    family: '弓兵系',
-    exclusiveTrait: ['弩弓：自身造成所有伤害 +8%'],
-    exclusive: false,
+    code: '21', family: '弓兵系', exclusive: false, caused: 0.08,
+    exclusiveTrait: ['弩弓：造成的所有伤害提高 8%'],
   },
   死士: {
-    code: '31',
-    family: '弓兵系',
-    exclusiveTrait: [
-      '无畏 / 短兵：自身**攻击距离固定为 1**（−1），攻击、防御、谋略属性各 **+18**',
-      '钢毅：怯战、犹豫状态下自身受到所有伤害 −20%',
-    ],
-    exclusive: false,
-    rangeMod: -1,
+    code: '31', family: '弓兵系', exclusive: false, rangeMod: -1,
     statMod: { attack: 18, defense: 18, strategy: 18 },
+    exclusiveTrait: ['无畏：攻击、防御、谋略 +18', '短兵：攻击距离 −1'],
+  },
+  连弩兵: {
+    code: '41', family: '弓兵系', exclusive: false,
+    exclusiveTrait: ['连射：每回合 30% 再普攻一次，首回合必定'],
+  },
+  火矢兵: {
+    code: '51', family: '弓兵系', exclusive: false, dotCaused: 0.2,
+    exclusiveTrait: ['火矢：火攻、燃烧造成的伤害 +20%', '点燃：普攻后额外触发目标身上已有燃烧一次'],
+  },
+  无当飞军: {
+    code: '61', family: '弓兵系', exclusive: false, taken: 0.1,
+    exclusiveTrait: ['隐蔽：非建筑领地受到所有伤害 −10%（无地图时默认生效）', '毒矢：普攻后随机动摇/恐慌/妖术 80% 1 回合'],
+  },
+  乡勇弓手: {
+    code: '71', family: '弓兵系', exclusive: false, taken: -0.08,
+    exclusiveTrait: ['乌合：克制乡勇轻骑，被其余兵种克制', '轻装：受到所有伤害 +8%'],
+  },
+  丹阳兵: {
+    code: '81', family: '弓兵系', exclusive: false, dotCaused: 0.2,
+    takenRounds: { rounds: 2, rate: 0.2 },
+    exclusiveTrait: ['果劲：前 2 回合受到所有伤害 −20%', '观隙：造成的持续性伤害 +20%'],
+  },
+  黄巾长弓: {
+    code: '91', family: '弓兵系', exclusive: false,
+    exclusiveTrait: ['劫粮：战胜获得征兵资源（战斗外）'],
+  },
+  解烦兵: {
+    code: '101', family: '弓兵系', exclusive: true,
+    exclusiveTrait: ['绝援：普攻后 20% 使目标无法恢复兵力，持续 1 回合'],
+  },
+  白波长弓: {
+    code: '111', family: '弓兵系', exclusive: false,
+    exclusiveTrait: ['谨慎：前 2 回合受到谋略伤害 −20%', '自愈：非枯竭地驻守战后恢复伤兵（战斗外）'],
+  },
+  黑山长弓: {
+    code: '121', family: '弓兵系', exclusive: false,
+    exclusiveTrait: ['竭力：枯竭地造成伤害逐回合叠加（无地图不生效）', '趋利：除攻城外最高属性 +10、最低属性 −20'],
+  },
+  耕战营: {
+    code: '131', family: '弓兵系', exclusive: false, caused: 0.15,
+    exclusiveTrait: ['繁盛：非建筑领地造成所有伤害 +15%（无地图时默认生效）', '军屯：征兵消耗降低（战斗外）'],
+  },
+  青囊兵: {
+    code: '141', family: '弓兵系', exclusive: false,
+    exclusiveTrait: ['兴仁：受到恢复后下回合受伤 −6%，可叠 3 层', '青囊：每受到 2 次伤害恢复兵力（恢复率 60%）'],
   },
   重步兵: {
-    code: '12',
-    family: '步兵系',
-    exclusiveTrait: ['披甲：自身受到所有伤害 −8%', '以静制动：作为防守方时自身受到主动战法伤害 −12%'],
-    exclusive: false,
+    code: '12', family: '步兵系', exclusive: false,
+    takenActive: 0.12, takenBeforeAct: 0.08, statMod: { speed: -15 },
+    exclusiveTrait: ['披甲：受到主动战法伤害 −12%，行动前额外 −8%', '负重：速度 −15'],
   },
   长枪兵: {
-    code: '22',
-    family: '步兵系',
-    exclusiveTrait: ['长武器：自身造成所有伤害 +8%', '阵型防守：受到骑兵伤害 −30%、对骑兵伤害 +30%', '弃盾：受到弓兵伤害 +30%、对弓兵伤害 −30%'],
-    exclusive: false,
+    code: '22', family: '步兵系', exclusive: false, caused: 0.08,
+    exclusiveTrait: ['长柄：造成所有伤害 +8%', '弃盾：克制骑兵系，被弓兵系克制'],
   },
   禁卫: {
-    code: '32',
-    family: '步兵系',
-    exclusiveTrait: ['护主：受到追击战法伤害 −20%（现版，不再分站位）', '铁意：混乱、暴走状态下自身受到所有伤害 −30%'],
-    exclusive: false,
-  },
-  蛮兵: {
-    code: '52',
-    family: '步兵系',
-    exclusiveTrait: ['自身造成所有伤害 +18%（用户 2026-09-20：地形不建模，默认吃得到效果）'],
-    exclusive: false,
+    code: '32', family: '步兵系', exclusive: false, taken: 0.06, takenPursuit: 0.2,
+    exclusiveTrait: ['铁意：受到所有伤害 −6%', '护主：受到追击战法伤害 −20%'],
   },
   藤甲兵: {
-    code: '42',
-    family: '步兵系',
-    exclusiveTrait: ['除燃烧/火攻外，自身受到所有伤害 −30%', '被燃烧/火攻克制：受到火攻时陷入暴走'],
-    exclusive: false,
+    code: '42', family: '步兵系', exclusive: false, takenNonBurn: 0.3,
+    exclusiveTrait: ['藤甲：除火攻、燃烧外受到所有伤害 −30%', '惧火：受到火攻、燃烧时暴走 2 回合'],
+  },
+  蛮兵: {
+    code: '52', family: '步兵系', exclusive: false, caused: 0.18,
+    exclusiveTrait: ['野战：非建筑领地造成所有伤害 +18%，建筑领地 −8%（无地图时按非建筑）'],
+  },
+  飞熊军: {
+    code: '62', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['肉搏：每回合对距离 1 的敌军攻击一次（伤害率 25%）', '异士：兵力低于 50% 时每回合行动前恢复兵力'],
+  },
+  舷卫: {
+    code: '72', family: '步兵系', exclusive: false, taken: 0.06,
+    exclusiveTrait: ['铁意：受到所有伤害 −6%', '舷战：水域攻击距离 +1（无水域不生效）'],
+  },
+  黄巾兵: {
+    code: '82', family: '步兵系', exclusive: false, statPct: -10,
+    exclusiveTrait: ['豪夺 / 煽动：资源与征兵（战斗外）', '涣散：全属性 −10%'],
+  },
+  大戟士: {
+    code: '92', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['铁戟：攻击方攻击 +8%，防守方防御 +8%', '巨盾：克制骑兵及弓兵系，被步兵系克制'],
+  },
+  白毦兵: {
+    code: '102', family: '步兵系', exclusive: true,
+    exclusiveTrait: ['巧变：兵力高于 50% 时攻击与策略伤害 +10%，低于 50% 时受到的攻击与策略伤害 −10%'],
+  },
+  乡勇步卒: {
+    code: '112', family: '步兵系', exclusive: false, taken: -0.08,
+    exclusiveTrait: ['乌合：克制乡勇弓手，被其余兵种克制', '轻装：受到所有伤害 +8%'],
+  },
+  白波轻步: {
+    code: '122', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['救主：我军大营兵力首次低于 80% 时援护大营 2 回合', '自愈：驻守恢复伤兵（战斗外）'],
+  },
+  黑山轻步: {
+    code: '132', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['竭力：枯竭地造成伤害逐回合叠加（无地图不生效）', '混战：受到攻击距离 ≤3 的普攻伤害 −20%'],
+  },
+  陷阵营: {
+    code: '142', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['陷阵：兵力首次低于 90%、70% 后造成伤害各 +10%', '金戈：进攻方前 4 回合首次攻击伤害 +25%'],
+  },
+  黄巾轻步: {
+    code: '152', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['劫粮：战胜获得征兵资源（战斗外）'],
+  },
+  重垣军: {
+    code: '162', family: '步兵系', exclusive: false,
+    exclusiveTrait: ['止戈：前 3 回合受伤有 15% 进入规避', '固守：建筑领地防守方受到所有伤害 −15%（无地图不生效）'],
+  },
+  白衣死士: {
+    code: '172', family: '步兵系', exclusive: true, priorityRounds: 2, taken: 0.15,
+    exclusiveTrait: ['蛰伏：首次受到的伤害大幅降低', '奇袭：前 2 回合优先行动，受到所有伤害 −15%'],
   },
   重骑兵: {
-    code: '13',
-    family: '骑兵系',
-    exclusiveTrait: [
-      '披甲：自身受到所有伤害 −10%',
-      '重骑冲阵：前 2 回合受到普通攻击时反击（伤害率 75%）——反击是**状态类**效果，与其它同类型反击冲突（先施加者生效，同分兵）',
-    ],
-    exclusive: false,
+    code: '13', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['迎击：前 2 回合受到普攻时反击（伤害率 75%）'],
   },
   轻骑兵: {
-    code: '23',
-    family: '骑兵系',
-    exclusiveTrait: [
-      '速度属性提高 15 点（用户 2026-09-20 口径）',
-      '轻骑冲阵：战斗开始后前 4 次攻击造成的伤害 +18%',
-    ],
-    exclusive: false,
-    statMod: { speed: 15 },
-  },
-  铁骑兵: {
-    code: '43',
-    family: '骑兵系',
-    exclusiveTrait: ['四类状态（混乱/暴走/怯战/犹豫）各自使自身受到所有伤害 −25%，不可叠加'],
-    exclusive: false,
+    code: '23', family: '骑兵系', exclusive: false, statMod: { speed: 15 },
+    exclusiveTrait: ['冲阵：前 4 次造成的所有伤害 +18%', '轻装：速度 +15'],
   },
   弓骑兵: {
-    code: '33',
-    family: '骑兵系',
-    exclusiveTrait: ['行踪难测：受到追击战法伤害 −90%', '骑射：可学弓兵与骑兵战法，**战法距离 +1**'],
-    exclusive: false,
-    skillRangeMod: 1,
+    code: '33', family: '骑兵系', exclusive: false, skillRangeMod: 1,
+    exclusiveTrait: ['骑射：所有战法距离 +1', '善弓：可学习弓兵战法'],
+  },
+  铁骑兵: {
+    code: '43', family: '骑兵系', exclusive: false, takenInControl: 0.25,
+    exclusiveTrait: ['不屈：混乱、暴走、怯战、犹豫状态下受到所有伤害 −25%'],
   },
   象兵: {
-    code: '53',
-    family: '骑兵系',
-    exclusiveTrait: [
-      '野性：不受任何指挥战法产生的效果影响（敌我双方、正面负面一视同仁）',
-      '自身受到的所有伤害 −10%',
-    ],
-    exclusive: false,
+    code: '53', family: '骑兵系', exclusive: false, taken: 0.1,
+    exclusiveTrait: ['野性：不受指挥战法影响，受到所有伤害 −10%'],
   },
-  // —— 武将专属（占位：专属特性数值待补，训练/转换关系已入库）——
-  解烦兵: { code: '101', family: '弓兵系', exclusiveTrait: [], exclusive: true },
-  白毦兵: { code: '102', family: '步兵系', exclusiveTrait: [], exclusive: true },
-  西凉铁骑: { code: '153', family: '骑兵系', exclusiveTrait: [], exclusive: true },
-  白衣死士: { code: '172', family: '骑兵系', exclusiveTrait: [], exclusive: true },
-  木牛流马: { code: '173', family: '骑兵系', exclusiveTrait: [], exclusive: true },
+  羽林骑: {
+    code: '83', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['忠诚：国家占领郡内受到所有伤害 −15%（无地图不生效）', '急行：10 格内行军速度 +50%（战斗外）'],
+  },
+  白马义从: {
+    code: '93', family: '骑兵系', exclusive: false, rangeMod: 1,
+    exclusiveTrait: ['策马：攻击距离 +1', '疾射：首回合普攻后对附近敌军造成伤害（伤害率 50%）'],
+  },
+  虎豹骑: {
+    code: '103', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['冲锋：首次普攻使目标混乱 1 回合'],
+  },
+  乡勇轻骑: {
+    code: '113', family: '骑兵系', exclusive: false, taken: -0.08,
+    exclusiveTrait: ['乌合：克制乡勇步卒，被其余兵种克制', '轻装：受到所有伤害 +8%'],
+  },
+  黄巾轻骑: {
+    code: '123', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['劫粮：战胜获得征兵资源（战斗外）'],
+  },
+  白波轻骑: {
+    code: '133', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['急速：每有一个指挥战法，速度 +10%', '自愈：驻守恢复伤兵（战斗外）'],
+  },
+  黑山轻骑: {
+    code: '143', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['竭力：枯竭地造成伤害逐回合叠加（无地图不生效）', '势众：普攻目标下一次造成的所有伤害 −30%'],
+  },
+  西凉铁骑: {
+    code: '153', family: '骑兵系', exclusive: true,
+    exclusiveTrait: ['横行：攻击无视目标 10% 防御', '马铠：前 3 回合攻击无视兵种相克，受普攻和追击伤害 −20%'],
+  },
+  伏龙军: {
+    code: '163', family: '骑兵系', exclusive: false,
+    exclusiveTrait: ['奇正：主动或追击后使敌军单体下次受到策略伤害 +15%', '勃发：每回合开始谋略 +4%，可叠 4 次'],
+  },
+  木牛流马: {
+    code: '173', family: '骑兵系', exclusive: true,
+    exclusiveTrait: ['木械：受妖术、恐慌、动摇伤害 −30%，受火攻、燃烧伤害 +15%', '粮援：第 2/4/6/8 回合行动前恢复兵力（恢复率 60%）'],
+  },
 };
 
 /** 全部二级兵种名 */
@@ -288,6 +385,11 @@ export function troopCounterReduceOf(params: {
     ? TROOP_OF_FAMILY[SECONDARY_TROOPS[targetSecondary].family]
     : targetTroop;
 
+  const xiang = xiangyongReduce(attackerSecondary, targetSecondary);
+  if (xiang !== null) return xiang;
+  const daji = dajiReduce(attackerSecondary, targetSecondary, atkLine, tgtLine);
+  if (daji !== null) return daji;
+
   // —— 长枪兵自身作为攻击方：对骑 +30%、被弓克 −30% ——
   if (attackerSecondary === '长枪兵') {
     if (tgtLine === 'cavalry') return -0.3; // 枪打骑：目标受击 +30%
@@ -302,6 +404,41 @@ export function troopCounterReduceOf(params: {
   }
 
   return COUNTER_OF[tgtLine] === atkLine ? 0.3 : 0;
+}
+
+/** 乡勇三角：各克制一种乡勇，并被该种以外的兵种克制。无乡勇参与时返回 null。 */
+function xiangyongReduce(atk?: SecondaryTroopType, tgt?: SecondaryTroopType): number | null {
+  const kinds: readonly SecondaryTroopType[] = ['乡勇弓手', '乡勇步卒', '乡勇轻骑'];
+  const beats: Partial<Record<SecondaryTroopType, SecondaryTroopType>> = {
+    乡勇弓手: '乡勇轻骑',
+    乡勇步卒: '乡勇弓手',
+    乡勇轻骑: '乡勇步卒',
+  };
+  /** 乡勇只不被自己、以及自己克制的那种克制 */
+  const countered = (victim: SecondaryTroopType, other?: SecondaryTroopType) =>
+    other !== victim && other !== beats[victim];
+  if (tgt && kinds.includes(tgt) && countered(tgt, atk)) return -0.3;
+  if (atk && kinds.includes(atk) && countered(atk, tgt)) return 0.3;
+  if ((atk && kinds.includes(atk)) || (tgt && kinds.includes(tgt))) return 0;
+  return null;
+}
+
+/** 大戟士：克制骑、弓，被步克制。双方都不是大戟士时返回 null。 */
+function dajiReduce(
+  atkTroop: SecondaryTroopType | undefined,
+  tgtTroop: SecondaryTroopType | undefined,
+  atkLine: TroopType,
+  tgtLine: TroopType,
+): number | null {
+  if (atkTroop !== '大戟士' && tgtTroop !== '大戟士') return null;
+  if (atkTroop === '大戟士') {
+    if (tgtLine === 'cavalry' || tgtLine === 'archer') return -0.3;
+    if (tgtLine === 'infantry') return 0.3;
+    return 0;
+  }
+  if (atkLine === 'cavalry' || atkLine === 'archer') return 0.3;
+  if (atkLine === 'infantry') return -0.3;
+  return 0;
 }
 
 /** 基础相克链：克制对象（骑克步、步克弓、弓克骑） */
@@ -393,6 +530,8 @@ export interface TraitCombatContext {
   isActiveSkill?: boolean;
   /** 轻骑兵「前 4 次攻击」是否仍在次数内（由轻骑兵攻击计数器判定） */
   lightCavalryAttackLeft?: boolean;
+  /** 受击者本回合是否已经行动（重步兵披甲「行动前额外 −8%」） */
+  targetHasActed?: boolean;
 }
 
 /** 特性增减伤结算结果：caused = 造成侧加成（1 = 无），reduce = 受击侧减伤（加算） */
@@ -430,13 +569,11 @@ export function traitCombatModifiers(x: TraitCombatContext): TraitModifiers {
   if (at.includes('挫锐')) takeBoost += 0.18;
   if (at.includes('散射')) takeBoost += 0; // 分兵（首攻溅射）主流程单独处理
 
-  // ── 施法者二级兵种专属特性（造成侧）──
-  if (x.attackerTroop === '弩兵') caused += 0.08;
-  if (x.attackerTroop === '长弓兵' && x.round <= 4) caused += 0.1;
-  // 轻骑冲阵：战斗开始后前 4 次**攻击** +18%（次数由 action.ts 的轻骑兵计数器传入；缺省视为已用尽）
+  // ── 施法者二级兵种（包内特性表的造成侧）──
+  const atkFx = x.attackerTroop ? SECONDARY_TROOPS[x.attackerTroop] : undefined;
+  if (atkFx?.caused) caused += atkFx.caused;
+  if (atkFx?.dotCaused && (x.isDot || x.isBurning)) caused += atkFx.dotCaused;
   if (x.attackerTroop === '轻骑兵' && x.lightCavalryAttackLeft === true) caused += 0.18;
-  // 蛮兵：野地 +18%（用户 2026-09-20：地形不建模，默认吃得到效果）
-  if (x.attackerTroop === '蛮兵') caused += 0.18;
 
   // ── 受击者通用特性（受击侧）──
   if (tt.includes('守备')) reduce += x.targetIsDefender ? 0.16 : 0.06;
@@ -445,29 +582,22 @@ export function traitCombatModifiers(x: TraitCombatContext): TraitModifiers {
   if (tt.includes('难测') && x.isBasicOrPursuit) reduce += 0.25;
   if (tt.includes('勇毅') && x.damageType === 'strategy') reduce += 0.15;
 
-  // ── 受击者二级兵种专属特性（受击侧）──
-  const t = x.targetTroop;
-  if (t === '重步兵') {
-    reduce += 0.08;
-    if (x.isActiveSkill) reduce += 0.12;
-  }
-  if (t === '禁卫') {
-    if (x.isPursuit) reduce += 0.2;
-    if (x.targetHasStatus('confusion') || x.targetHasStatus('rampage')) reduce += 0.3;
-  }
-  if (t === '死士') {
-    if (x.targetHasStatus('cowardice') || x.targetHasStatus('hesitation')) reduce += 0.2;
-  }
-  if (t === '铁骑兵') {
-    // 四类状态各自 −25%，**不可叠加**（用户 2026-09-20 确认）→ 最多 +0.25
+  // ── 受击者二级兵种（包内特性表）──
+  const tfx = x.targetTroop ? SECONDARY_TROOPS[x.targetTroop] : undefined;
+  if (tfx?.taken) reduce += tfx.taken;
+  if (tfx?.takenActive && x.isActiveSkill) reduce += tfx.takenActive;
+  if (tfx?.takenBeforeAct && !x.targetHasActed) reduce += tfx.takenBeforeAct;
+  if (tfx?.takenPursuit && x.isPursuit) reduce += tfx.takenPursuit;
+  if (tfx?.takenNonBurn && !x.isBurning) reduce += tfx.takenNonBurn;
+  if (tfx?.takenRounds && x.round <= tfx.takenRounds.rounds) reduce += tfx.takenRounds.rate;
+  if (tfx?.takenInControl) {
     const any = x.targetHasStatus('confusion') || x.targetHasStatus('rampage') || x.targetHasStatus('cowardice') || x.targetHasStatus('hesitation');
-    if (any) reduce += 0.25;
+    if (any) reduce += tfx.takenInControl;
   }
-  if (t === '重骑兵') reduce += 0.1;
-  if (t === '象兵') reduce += 0.1;
-  if (t === '藤甲兵') reduce += x.isBurning ? -0.15 : 0.3;
-  if (t === '长弓兵') reduce -= 0.08; // 轻装：自身受到所有伤害 +8%
-  if (t === '弓骑兵' && x.isPursuit) reduce += 0.9;
+  if (x.targetTroop === '西凉铁骑' && x.round <= 3 && x.isBasicOrPursuit) reduce += 0.2;
+  if (x.targetTroop === '白波长弓' && x.damageType === 'strategy' && x.round <= 2) reduce += 0.2;
+  if (x.targetTroop === '木牛流马' && x.isDot && !x.isBurning) reduce += 0.3;
+  if (x.targetTroop === '木牛流马' && x.isBurning) reduce -= 0.15;
 
   return { caused, takeBoost, reduce };
 }

@@ -32,7 +32,7 @@ import type {
 } from './types';
 import type { Rng } from './rng';
 import { calcDamage, applyTroopCap, scaledValue, roundRate, sumRates, buffMult, calcHealAmount, moraleRate, applyIgnoreDef, troopCounterReduce } from './formulas';
-import { troopCounterReduceOf as secondaryCounterReduceOf, traitCombatModifiers, traitStatBonus, statModOf, effectiveTroopLine, type TraitCombatContext } from './secondaryTroop';
+import { troopCounterReduceOf as secondaryCounterReduceOf, traitCombatModifiers, traitStatBonus, statModOf, effectiveTroopLine, SECONDARY_TROOPS, type TraitCombatContext } from './secondaryTroop';
 import { isTreasureSource, treasureLabel } from './treasure-source';
 import { TREASURES_BY_ID } from '../data/treasures';
 import type { TreasureType } from '../data/treasures';
@@ -678,6 +678,8 @@ export interface CombatContext {
    * 可选字段：单元测试直接构造 ctx 时可省略，执行时惰性初始化。
    */
   hurtEveryCounters?: Map<string, number>;
+  /** 兵种一次性触发（虎豹骑冲锋只混乱一次） */
+  troopOnce?: Set<string>;
   /** 受击 hook 重入保护：反击/引爆等二次 applyDamage 不再触发 onHurt（防盲侯循环） */
   resolvingHurtHooks?: boolean;
   /**
@@ -1692,6 +1694,21 @@ export function grantSecondaryTroopStatuses(ctx: CombatContext, unit: UnitState)
       'trait_zhongqi_counter'
     );
   }
+  if (g.secondaryTroop === '西凉铁骑') {
+    inflictStatus(ctx, unit, { type: 'ignore_def', rate: 0.1, duration: 999 }, 'passive', 'trait_xiliang');
+  }
+  if (g.secondaryTroop === '大戟士' && ctx.defenderSide) {
+    const defending = unit.side === ctx.defenderSide;
+    inflictStatus(
+      ctx,
+      unit,
+      defending
+        ? { type: 'defense_buff', amount: 8, percent: true, duration: 999 }
+        : { type: 'attack_buff', amount: 8, percent: true, duration: 999 },
+      'passive',
+      'trait_daji'
+    );
+  }
 
   // 散射（通用特性）：首次普攻附带分兵 40%
   if (g.secondaryTraits?.includes('散射') && !hasStatus(unit, 'split')) {
@@ -2042,6 +2059,38 @@ export function triggerPassiveSkills(
       continue;
     }
     executeSkillWithTargets(ctx, unit, skill, enemies, allies, mixedPool(ctx, unit));
+    if (skill.id === 'manwang_yuzhong') applyManwangTroopBranch(ctx, unit, skill, allies);
+  }
+}
+
+/** 蛮兵 / 藤甲兵 / 象兵：蛮王御众把减伤分一半、援护拉到 4 回合。 */
+const MANWANG_TROOPS = new Set(['蛮兵', '藤甲兵', '象兵']);
+
+/**
+ * 蛮王御众兵种分支：该友军享受孟获自身减伤的一半（15%、成长 0.05、受防御），持续 3 回合；
+ * 对其援护延到 4 回合（protectId 覆盖，全体援护仍是 2 回合）。不含施法者自己。
+ */
+function applyManwangTroopBranch(ctx: CombatContext, unit: UnitState, skill: Skill, allies: UnitState[]): void {
+  for (const ally of allies) {
+    if (ally.general.id === unit.general.id) continue;
+    const troop = ally.general.secondaryTroop;
+    if (!troop || !MANWANG_TROOPS.has(troop)) continue;
+    executeSkillOutputs(ctx, unit, skill, [ally], [
+      {
+        kind: 'inflict_status',
+        status: { type: 'damage_reduce', rate: 0.15, growthRate: 0.05, duration: 3, defenseScaled: true, damageType: 'physical' },
+      },
+      {
+        kind: 'inflict_status',
+        status: { type: 'damage_reduce', rate: 0.15, growthRate: 0.05, duration: 3, defenseScaled: true, damageType: 'strategy' },
+      },
+    ]);
+    executeSkillOutputs(ctx, unit, skill, [unit], [
+      {
+        kind: 'inflict_status',
+        status: { type: 'cover', duration: 4, protectId: ally.general.id },
+      },
+    ]);
   }
 }
 
@@ -3035,10 +3084,23 @@ export function actUnit(ctx: CombatContext, unit: UnitState): void {
         triggerPursuitSkill(ctx, unit, pursuit, hit, enemies);
       }
     }
+    if (hit && unit.general.secondaryTroop === '解烦兵' && ctx.rng.chance(0.2)) {
+      inflictStatus(ctx, hit, { type: 'siege', duration: 1 }, 'passive', 'trait_jiefan');
+    }
+    if (hit && unit.general.secondaryTroop === '虎豹骑') {
+      ctx.troopOnce ??= new Set();
+      const key = `${unit.general.id}:hubao`;
+      if (!ctx.troopOnce.has(key)) {
+        ctx.troopOnce.add(key);
+        inflictStatus(ctx, hit, { type: 'confusion', duration: 1 }, 'passive', 'trait_hubao');
+      }
+    }
     return hit;
   };
   const comboCount = hasStatus(unit, 'combo') ? 2 : 1;
+  const liannu = unit.general.secondaryTroop === '连弩兵' && (ctx.currentRound <= 1 || ctx.rng.chance(0.3));
   for (let i = 0; i < comboCount; i++) doOneAttack();
+  if (liannu) doOneAttack();
   // 伏波扬砂（马腾）：普攻后每消耗 4 层【扬砂】追加一次普攻，可重复触发直到不足 4 层
   // （额外普攻同样是普攻 → 继续累计层数；上限 20 次防失控）
   for (let extra = 0; extra < YANGSHA_MAX_EXTRA_ATTACKS; extra++) {
@@ -5213,6 +5275,15 @@ export function consumeEvasion(ctx: CombatContext, target: UnitState, sourceId: 
   return false;
 }
 
+/** 黑山长弓「趋利」：面板最高属性 +10、最低 −20（同值两边都吃）。 */
+function heishanFlat(g: { secondaryTroop?: string; attack: number; defense: number; strategy: number; speed: number }, kind: 'attack' | 'defense' | 'strategy' | 'speed'): number {
+  if (g.secondaryTroop !== '黑山长弓') return 0;
+  const panel = { attack: g.attack, defense: g.defense, strategy: g.strategy, speed: g.speed };
+  const hi = Math.max(panel.attack, panel.defense, panel.strategy, panel.speed);
+  const lo = Math.min(panel.attack, panel.defense, panel.strategy, panel.speed);
+  return (panel[kind] === hi ? 10 : 0) + (panel[kind] === lo ? -20 : 0);
+}
+
 /** 生效属性：面板基础值 + 部队加成点数 + 战法点数增减（攻击/防御/谋略/速度）+ 百分比增减。
  *  百分比按「当前生效属性（含部队加成与点数增减后）」结算：eff = base + formation + flat，再 + round(eff × Σpercent/100)。
  *  正负独立：攻击增益(+)与攻击降低(-)互不抵消，各自相加。 */
@@ -5223,7 +5294,7 @@ export function effectiveStat(unit: UnitState, kind: 'attack' | 'defense' | 'str
   // 兵种特性点数加成（利刃：每个非主动战法 +22 攻击；地利：按站位加四维）
   const traitFlat = traitStatBonus(g, kind);
   // 二级兵种永久属性（死士 攻/防/谋 +18、轻骑兵 速度 +15）
-  const troopFlat = statModOf(g.secondaryTroop, kind);
+  const troopFlat = statModOf(g.secondaryTroop, kind) + heishanFlat(g, kind);
   const buffs = unit.statuses.filter((s) =>
     kind === 'attack' ? s.type === 'attack_buff'
       : kind === 'defense' ? s.type === 'defense_buff'
@@ -5231,7 +5302,9 @@ export function effectiveStat(unit: UnitState, kind: 'attack' | 'defense' | 'str
           : s.type === 'speed_buff'
   );
   const flat = formation + traitFlat + troopFlat + buffs.reduce((acc, s) => acc + (('amount' in s && !('percent' in s && s.percent) ? s.amount : 0) as number), 0);
-  const pct = buffs.reduce((acc, s) => acc + (('amount' in s && 'percent' in s && s.percent ? s.amount : 0) as number), 0);
+  const troopPct = (g.secondaryTroop ? SECONDARY_TROOPS[g.secondaryTroop].statPct ?? 0 : 0)
+    + (g.secondaryTroop === '白波轻骑' && kind === 'speed' ? g.commandSkillIds.length * 10 : 0);
+  const pct = troopPct + buffs.reduce((acc, s) => acc + (('amount' in s && 'percent' in s && s.percent ? s.amount : 0) as number), 0);
   const eff = base + flat;
   if (pct === 0) return eff;
   // 四舍五入按绝对值（-31.5 → -32，与「降低 32 点」直觉一致）
@@ -5340,6 +5413,7 @@ function traitCtx(
     targetTraits: target.general.secondaryTraits,
     targetTroop: target.general.secondaryTroop,
     targetHasStatus: has,
+    targetHasActed: target.hasActedThisRound === true,
     targetTroops: target.troops,
     round: ctx?.currentRound ?? 1,
     targetPosition: target.general.position,
@@ -7763,11 +7837,15 @@ function executeSkillOutputs(
           executeDamageChain(ctx, caster, skill, targets, out);
           break;
         }
+        const allyPick =
+          out.attacker === 'highest_attack_ally' && out.attackerExcludeSelf
+            ? allies.filter((a) => a.general.id !== caster.general.id)
+            : allies;
         const source =
           out.attacker === 'lowest_strategy_ally'
             ? lowestStrategyAlly(allies, caster)
             : out.attacker === 'highest_attack_ally'
-              ? highestStatAlly(allies, 'attack')
+              ? highestStatAlly(allyPick, 'attack')
               : caster;
         if (!source) {
           rememberDamageTargets([]);
@@ -9759,7 +9837,18 @@ function triggerPassiveHurtEvery(ctx: CombatContext, victim: UnitState): void {
       unitId: victim.general.id,
       detail: `【${victim.general.name}】执行来自【${victim.general.name}】的【${skill.name}】效果（累计受到 ${count} 次伤害）！`,
     });
-    executeSkillOutputs(ctx, victim, skill, [victim], skill.hurtEvery.output);
+    let outputs = skill.hurtEvery.output;
+    if (skill.id === 'manwang_yuzhong') {
+      const allies = (victim.side === 'my' ? ctx.myTeam : ctx.enemyTeam).filter((a) => a.general.id !== victim.general.id);
+      const top = highestStatAlly(allies, 'attack');
+      const troop = top?.general.secondaryTroop;
+      if (troop && MANWANG_TROOPS.has(troop)) {
+        outputs = outputs.map((o) =>
+          o.kind === 'physical_damage' && typeof o.rate === 'number' ? { ...o, chance: 1, rate: o.rate + 120 } : o
+        );
+      }
+    }
+    executeSkillOutputs(ctx, victim, skill, [victim], outputs);
   }
 }
 
@@ -10144,6 +10233,9 @@ export function applyDamage(
   hit?: DamageHitContext
 ): void {  // 已阵亡单位不再吃伤害、不再走急救（阻止伤兵池膨胀后被救回）
   if (!target.alive) return;
+  if ((hit?.dotType === 'burning' || hit?.dotType === 'ignite') && target.general.secondaryTroop === '藤甲兵') {
+    inflictStatus(ctx, target, { type: 'rampage', duration: 2 }, 'passive', 'trait_tengjia');
+  }
   // 七擒七纵：我军前 N 次受到伤害实例的规避判定（共享计数；判定成败都消耗 1 次，第 N 次后惩罚）
   if (source && source.side !== target.side && resolveInstanceGuard(ctx, target, 'damage')) return;
   // 援护代受：被援护者的普攻转由援护者承接（战报记 cover 事件，原目标本次不受伤害）。

@@ -52,7 +52,6 @@ describe('暂时下架名单', () => {
 
   it('未确认成长的主战法对应武将全部下架', () => {
     const hidden = heroesJson.filter((h) => h.mainSkillId && OFFLINE_MAIN_SKILLS[h.mainSkillId]);
-    expect(hidden.length).toBeGreaterThan(0);
     expect(hidden.every((h) => !isHeroListed(h))).toBe(true);
   });
 
@@ -68,6 +67,7 @@ describe('暂时下架名单', () => {
       'mouyi_hongtu',
       'liehuo_fenzhou',
       'pibing_juyi',
+      'manwang_yuzhong',
     ];
     for (const id of confirmed) {
       expect(OFFLINE_MAIN_SKILLS[id], `${id} 应已从上架黑名单移除`).toBeUndefined();

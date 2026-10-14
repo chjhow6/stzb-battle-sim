@@ -64,7 +64,6 @@ describe('兵种转换端到端', () => {
     expect(rec, 'XP孙权应已入库').toBeDefined();
     expect(HERO_SECONDARY_TROOPS['h808']).toEqual(['弩兵', '解烦兵']);
     const g = { ...level40(rec, {}, 9000), position: '大营' as const, secondaryTroop: '解烦兵' as const };
-    // 解烦兵专属特性留空占位 → traitsFor 仍给弓兵系池
     const rep = runBattle({
       myTeam: [{ ...g, secondaryTraits: traitsFor('解烦兵').slice(0, 2) }],
       enemyTeam: [level40(HERO_REGISTRY['h476'], {}, 9000)],
@@ -72,7 +71,7 @@ describe('兵种转换端到端', () => {
       maxRounds: 4,
     });
     expect(rep.events.some((e) => e.type === 'attack_hit')).toBe(true);
-    expect(SECONDARY_TROOPS['解烦兵'].exclusiveTrait).toEqual([]);
+    expect(SECONDARY_TROOPS['解烦兵'].exclusiveTrait[0]).toContain('绝援');
   });
 
   it('withSkills 不覆盖兵种字段（配将流程可叠加额外战法）', () => {

@@ -13,6 +13,7 @@ import { SKILL_REGISTRY } from '../data/skills';
 import { validateMutualExclusion } from '../data/hero-utils';
 import { computeTroopBonuses } from './troopBonus';
 import { applyTreasureEffects, triggerTreasureRoundStart } from './treasure';
+import { SECONDARY_TROOPS } from './secondaryTroop';
 
 const POSITION_PRIORITY: Record<string, number> = { 前锋: 0, 中军: 1, 大营: 2 };
 
@@ -271,16 +272,14 @@ export function buildPriorityOrder(
   turnOrder: UnitState[],
   round: number,
   skills: Map<string, Skill>,
-  /** 防守方阵营（长弓兵「先发」等「作为防守方时」条件用）；缺省 undefined = 无防守方 */
+  /** 防守方阵营。先发/奇袭已不限攻守，参数保留给调用方。 */
   defenderSide?: Side
 ): UnitState[] {
   const inPriority = (u: UnitState): boolean =>
     // ① 通用特性「疾行」：骑兵系高级兵种前 3 回合优先行动
     (u.general.secondaryTraits?.includes('疾行') === true && round <= 3) ||
-    // ② 二级兵种专属「轻骑冲阵」：轻骑兵前 2 回合优先行动
-    (u.general.secondaryTroop === '轻骑兵' && round <= 2) ||
-    // ③ 二级兵种专属「先发」：长弓兵作为防守方时前 2 回合优先行动（需声明防守方）
-    (u.general.secondaryTroop === '长弓兵' && defenderSide !== undefined && u.side === defenderSide && round <= 2) ||
+    // ② 包内先发/奇袭：前 N 回合优先，不限攻守（长弓兵、白衣死士）
+    (u.general.secondaryTroop != null && round <= (SECONDARY_TROOPS[u.general.secondaryTroop].priorityRounds ?? 0)) ||
     // ④ 主动战法发动后授予的 priority 状态（诸葛锦囊）
     u.statuses.some((st) => st.type === 'priority') ||
     // ⑤ 指挥战法常驻（先驱突击前 N 回合）

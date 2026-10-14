@@ -2,7 +2,7 @@
  * 二级兵种（兵种转换）数据层测试
  *
  * 依据 `docs/兵种转换调研.md`（用户 2026-09-20 审定口径）：
- *  - 13 个常规二级兵种 + 5 个武将专属（占位）
+ *  - 包内高级兵种 46 个（弓 14 / 步 17 / 骑 15），其中 5 个武将专属
  *  - 每个五星武将恰好两个转换方向
  *  - 通用特性按兵系成池，现版每系 5 个；已移除的 6 个不出现
  *  - 攻击距离修正：长弓兵 +1 / 死士 −1
@@ -29,42 +29,29 @@ import {
 import { HERO_SECONDARY_TROOPS, INCOMPLETE_SECONDARY_TROOPS, PENDING_SECONDARY_TROOPS } from '../src/data/secondaryTroops';
 
 describe('二级兵种注册表', () => {
-  it('共 13 个常规 + 5 个武将专属，代码唯一', () => {
-    expect(ALL_SECONDARY_TROOPS).toHaveLength(18);
+  it('包内 46 个高级兵种，代码唯一，专属仍是 5 个', () => {
+    expect(ALL_SECONDARY_TROOPS).toHaveLength(46);
     const codes = ALL_SECONDARY_TROOPS.map((t) => SECONDARY_TROOPS[t].code);
     expect(new Set(codes).size).toBe(codes.length);
     expect(ALL_SECONDARY_TROOPS.filter((t) => SECONDARY_TROOPS[t].exclusive)).toEqual([
       '解烦兵',
       '白毦兵',
-      '西凉铁骑',
       '白衣死士',
+      '西凉铁骑',
       '木牛流马',
     ]);
   });
 
-  it('兵系归属：步 5 / 弓 3 / 骑 5（常规）+ 专属按兵系挂靠', () => {
+  it('兵系归属：弓 14 / 步 17 / 骑 15（白衣死士属步兵系）', () => {
     const byFamily: Record<string, SecondaryTroopType[]> = { 步兵系: [], 弓兵系: [], 骑兵系: [] };
     for (const t of ALL_SECONDARY_TROOPS) byFamily[familyOf(t)].push(t);
-    // 常规：步 5（重步兵/长枪兵/禁卫/蛮兵/藤甲兵）、弓 3、骑 5
-    expect(byFamily['步兵系'].filter((t) => !SECONDARY_TROOPS[t].exclusive)).toEqual([
-      '重步兵',
-      '长枪兵',
-      '禁卫',
-      '蛮兵',
-      '藤甲兵',
-    ]);
-    expect(byFamily['弓兵系'].filter((t) => !SECONDARY_TROOPS[t].exclusive)).toEqual(['长弓兵', '弩兵', '死士']);
-    expect(byFamily['骑兵系'].filter((t) => !SECONDARY_TROOPS[t].exclusive)).toEqual([
-      '重骑兵',
-      '轻骑兵',
-      '铁骑兵',
-      '弓骑兵',
-      '象兵',
-    ]);
-    // 含专属：步 6 / 弓 4 / 骑 8
-    expect(byFamily['步兵系']).toHaveLength(6);
-    expect(byFamily['弓兵系']).toHaveLength(4);
-    expect(byFamily['骑兵系']).toHaveLength(8);
+    expect(byFamily['弓兵系']).toHaveLength(14);
+    expect(byFamily['步兵系']).toHaveLength(17);
+    expect(byFamily['骑兵系']).toHaveLength(15);
+    expect(familyOf('白衣死士')).toBe('步兵系');
+    expect(byFamily['步兵系']).toEqual(expect.arrayContaining(['重步兵', '藤甲兵', '大戟士', '白衣死士']));
+    expect(byFamily['弓兵系']).toEqual(expect.arrayContaining(['长弓兵', '连弩兵', '火矢兵', '无当飞军']));
+    expect(byFamily['骑兵系']).toEqual(expect.arrayContaining(['象兵', '虎豹骑', '西凉铁骑']));
   });
 
   it('代码 → 兵种名双向可查（官方编码规律：十位=兵系，个位=系内序号）', () => {
@@ -95,13 +82,14 @@ describe('二级兵种注册表', () => {
     expect(skillRangeModOf(undefined)).toBe(0);
   });
 
-  it('永久属性加减：死士 攻/防/谋 +18；轻骑兵 速度 +15；其余 0', () => {
+  it('永久属性加减：死士 攻/防/谋 +18；轻骑兵速度 +15；重步兵速度 −15', () => {
     expect(statModOf('死士', 'attack')).toBe(18);
     expect(statModOf('死士', 'defense')).toBe(18);
     expect(statModOf('死士', 'strategy')).toBe(18);
     expect(statModOf('死士', 'speed')).toBe(0);
     expect(statModOf('轻骑兵', 'speed')).toBe(15);
     expect(statModOf('轻骑兵', 'attack')).toBe(0);
+    expect(statModOf('重步兵', 'speed')).toBe(-15);
     expect(statModOf('象兵', 'speed')).toBe(0);
     expect(statModOf(undefined, 'attack')).toBe(0);
   });
@@ -179,6 +167,20 @@ describe('高级兵种改写相克（统一 −30%，长枪兵反转）', () => 
     ).toBeCloseTo(0.3);
   });
 
+  it('乡勇三角：弓手克轻骑、步卒克弓手、轻骑克步卒，并被其余兵种克', () => {
+    expect(troopCounterReduceOf({ attackerTroop: 'archer', attackerSecondary: '乡勇弓手', targetTroop: 'cavalry', targetSecondary: '乡勇轻骑' })).toBeCloseTo(-0.3);
+    expect(troopCounterReduceOf({ attackerTroop: 'infantry', attackerSecondary: '乡勇步卒', targetTroop: 'archer', targetSecondary: '乡勇弓手' })).toBeCloseTo(-0.3);
+    expect(troopCounterReduceOf({ attackerTroop: 'cavalry', attackerSecondary: '乡勇轻骑', targetTroop: 'infantry', targetSecondary: '乡勇步卒' })).toBeCloseTo(-0.3);
+    expect(troopCounterReduceOf({ attackerTroop: 'cavalry', targetTroop: 'archer', targetSecondary: '乡勇弓手' })).toBeCloseTo(-0.3);
+  });
+
+  it('大戟士克骑和弓，被步克', () => {
+    expect(troopCounterReduceOf({ attackerTroop: 'infantry', attackerSecondary: '大戟士', targetTroop: 'cavalry' })).toBeCloseTo(-0.3);
+    expect(troopCounterReduceOf({ attackerTroop: 'infantry', attackerSecondary: '大戟士', targetTroop: 'archer' })).toBeCloseTo(-0.3);
+    expect(troopCounterReduceOf({ attackerTroop: 'infantry', attackerSecondary: '大戟士', targetTroop: 'infantry' })).toBeCloseTo(0.3);
+    expect(troopCounterReduceOf({ attackerTroop: 'cavalry', targetTroop: 'infantry', targetSecondary: '大戟士' })).toBeCloseTo(0.3);
+  });
+
   it('长枪兵 vs 步兵：无相克（不互为克制链）', () => {
     expect(
       troopCounterReduceOf({ attackerTroop: 'infantry', targetTroop: 'infantry', attackerSecondary: '长枪兵' })
@@ -239,9 +241,9 @@ describe('武将转换方向数据', () => {
     expect(owners.get('木牛流马')).toEqual(['xp_jiangwei']);
   });
 
-  it('5 个武将专属兵种的专属特性留空占位（用户口径：数值待补，不编造）', () => {
+  it('5 个武将专属兵种的专属特性已按包内登记', () => {
     for (const t of ['解烦兵', '白毦兵', '西凉铁骑', '白衣死士', '木牛流马'] as SecondaryTroopType[]) {
-      expect(SECONDARY_TROOPS[t].exclusiveTrait, t).toEqual([]);
+      expect(SECONDARY_TROOPS[t].exclusiveTrait.length, t).toBeGreaterThan(0);
     }
   });
 
