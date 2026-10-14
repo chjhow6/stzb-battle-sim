@@ -93,6 +93,37 @@ export function freePointBudget(heroId: string, redness = 0, level = 40): number
   return Math.round((isFemale(heroId) ? 1.5 : 1) * level) + Math.max(0, redness) * 10;
 }
 
+/** 截图看不到加点时，这些武将的自由属性全部加在这一项上（用户 2026-10-07）。 */
+export const DEFAULT_POINT_STAT: Record<string, 'attack' | 'defense' | 'strategy' | 'speed'> = {
+  h479: 'attack', // 吕布（群弓）
+  taishici: 'attack', // 太史慈
+  h494: 'attack', // 祝融夫人
+  h29: 'speed', // 张春华
+  h685: 'speed', // 乐进
+  h27: 'speed', // 张辽
+  h15: 'strategy', // 甄洛
+  h672: 'strategy', // 曹植
+  h23: 'strategy', // 曹操（魏武之世）
+  h796: 'defense', // 于禁
+};
+
+/**
+ * 按 {@link DEFAULT_POINT_STAT} 把整份预算加到一项；不在名单里则四项都是 0。
+ * @param heroId 武将 id
+ * @param redness 红度
+ * @param level 等级
+ */
+export function defaultFreePoints(
+  heroId: string,
+  redness = 0,
+  level = 40,
+): { attack: number; defense: number; strategy: number; speed: number } {
+  const pts = { attack: 0, defense: 0, strategy: 0, speed: 0 };
+  const stat = DEFAULT_POINT_STAT[heroId];
+  if (stat) pts[stat] = freePointBudget(heroId, redness, level);
+  return pts;
+}
+
 /** 武将携带兵力公式：等级×100 + 5000 + 红度×200（40 级白板 = 9000，50 级满红 = 11000） */
 export function troopCapacity(level: number, redness = 0): number {
   return Math.max(0, level) * 100 + 5000 + Math.max(0, redness) * 200;
