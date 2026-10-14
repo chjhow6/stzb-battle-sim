@@ -115,6 +115,24 @@ describe('computeTroopBonuses', () => {
     expect(miss.lines.filter((l) => l.category === 'title')).toHaveLength(0);
   });
 
+  it('魏之智换程昱仍触发；五星郭嘉与四星郭嘉同队不触发', () => {
+    const ok = computeTroopBonuses([
+      g({ id: 'h787', name: '程昱', faction: '魏', troopType: 'cavalry', position: '大营' }),
+      g({ id: 'h476', name: '郭嘉', faction: '魏', troopType: 'cavalry', position: '中军' }),
+      g({ id: 'h618', name: '贾诩', faction: '魏', troopType: 'archer', position: '前锋' }),
+    ]);
+    const titles = ok.lines.filter((l) => l.category === 'title');
+    expect(titles).toHaveLength(3);
+    expect(titles.every((l) => l.titleId === 'wei_zhi_zhi' && l.bonuses.strategy === 32)).toBe(true);
+
+    const bothGuo = computeTroopBonuses([
+      g({ id: 'h24', name: '荀彧', faction: '魏', troopType: 'cavalry', position: '大营' }),
+      g({ id: 'h476', name: '郭嘉', faction: '魏', troopType: 'cavalry', position: '中军' }),
+      g({ id: 'h78', name: '郭嘉', faction: '魏', troopType: 'cavalry', position: '前锋' }),
+    ]);
+    expect(bothGuo.lines.filter((l) => l.category === 'title')).toHaveLength(0);
+  });
+
   it('空队：byUnit 空、lines 空', () => {
     const r = computeTroopBonuses([]);
     expect(r.lines).toEqual([]);

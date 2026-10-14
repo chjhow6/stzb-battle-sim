@@ -616,8 +616,10 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       ] },
     ],
   },
-  /** 密谋定蜀（庞统主战法，S2）：敌军群体 2 目标减伤 30%（受谋略，减伤成长待确认）+ 恐慌 143%（官方现行，受谋略，成长率 1.125/点）
-   *  + 妖术诅咒 133%（受谋略，成长率 1.225/点：试图发动追击战法时触发）；每次发动后自身造成策略伤害 +5%（受谋略，成长待确认）可叠加至战斗结束 */
+  /** 密谋定蜀（庞统主战法，S2）：敌军群体进行攻击和策略攻击的伤害降低 30%（受谋略，成长率待确认沿用 0.25）
+   *  + 恐慌 143%（官方现行，受谋略，成长率 1.5）+ 妖术诅咒 133%（受谋略，成长率 1.225：试图发动追击战法时触发）；
+   *  每次发动后自身造成策略攻击伤害 +5%（受谋略，成长待确认沿用 0.05）可叠加至战斗结束。
+   *  解包 effect：攻击伤害降低 + 策略攻击伤害降低 = 造成侧（damage_boost direction caused 负值），不是受到侧 damage_reduce。 */
   mimou_dingshu: {
     id: 'mimou_dingshu',
     name: '密谋定蜀',
@@ -627,12 +629,12 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 0.35,
     targetMode: 'group',
     targetSide: 'enemy',
-    tags: ['damage_reduce', 'panic', 'curse', 'damage_boost'],
+    tags: ['damage_boost', 'panic', 'curse'],
     output: [
-      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.3, duration: 2, strategyScaled: true, growthRate: 0.25 } },
+      { kind: 'inflict_status', status: { type: 'damage_boost', rate: -0.3, duration: 2, direction: 'caused', strategyScaled: true, growthRate: 0.25 } },
       { kind: 'inflict_status', status: { type: 'panic', duration: 2, rate: 143, growthRate: 1.5 } },
       { kind: 'inflict_status', status: { type: 'curse', duration: 2, rate: 133, growthRate: 1.225 } },
-      { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.05, duration: 999, direction: 'caused', strategyScaled: true, growthRate: 0.05, stack: true }, targetSide: 'self' },
+      { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.05, duration: 999, direction: 'caused', damageType: 'strategy', strategyScaled: true, growthRate: 0.05, stack: true }, targetSide: 'self' },
     ],
   },
   /** 火势风威（陆逊主战法，S2）：1 回合准备，敌军全体策略攻击 111%（受谋略，成长率 0.95/点）+ 引燃标记 221%（受谋略，成长率 2.45/点：
@@ -4683,7 +4685,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    * 始计（S 二类指挥·距离 5·目标自己）：
    * 战斗前 4 回合、**自身行动时**（用户确认走 `roundTrigger:'on_act'`，非回合开始）：
    *  ① 我军大营 下一次攻击或策略攻击伤害 +20%（受谋略，成长率未确认 → 留空按基值）；
-   *  ② 敌方**兵力最多**单体 下一次攻击或策略攻击伤害 −30%（受谋略，同上）；
+   *  ② 敌方**兵力最多**单体 下一次攻击或策略攻击**造成**的伤害 −30%（受谋略，同上；造成侧 direction:'caused'，不是受到侧）；
    *  ③ 自身受到攻击或策略攻击伤害后，于本回合内进入**洞察**（免疫混乱/犹豫/怯战/暴走/挑衅）。
    * 实现：前 4 回合窗口走 `onActSegments(startRound:1,endRound:4)`（主 `output` 为空——
    *   二类指挥 on_act 仍会锁 [自身] 目标并触发本段）；① 用 `positions:['大营']` + targetSide:'ally' 选我方大营；
@@ -4730,7 +4732,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
               type: 'damage_boost',
               rate: -0.3,
               duration: 999,
-              direction: 'taken',
+              direction: 'caused',
               charges: 1,
               strategyScaled: true,
             },
@@ -6401,8 +6403,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    * 官方：scripts/skill_extra.json id 200795（指挥 B / 距离 3 / 我军群体 3 目标 / 步；
    * 满级 60 防御 + 反击 75% + 减伤 20%，1 级 30 / 37.5% / 10%）。
    * 全文无「受 XX 属性影响」→ 无成长率留空问题、不登记下架（**张梁上架**）。
-   * 引擎配套：**新增 `damage_reduce.requireSelfStatus`（条件减伤）** —— 仅当携带者自身带该状态时本减伤才生效，
-   *   在 sumReduce / collectDamageModifiers 按携带者**当前**状态实时判定（人公将军：仅对带「妖术」的敌军生效）。
+   * 解包 effect「攻击伤害降低」= 敌方**造成**的攻击伤害降低（damage_boost direction caused），
+   *   不是受到侧 damage_reduce。`requireSelfStatus:'sorcery'` 按携带者当前状态实时判定。
    * 其余全部既有：一类指挥（准备阶段施加一次）/ 防御属性点数 buff / `counter` 反击资格（受普攻实际扣兵后反击来源）/
    *   inflict_status 的 positions 站位筛选（怀橘遗亲先例）。
    */
@@ -6415,7 +6417,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     triggerRate: 1,
     targetMode: 'all',
     targetSide: 'ally',
-    tags: ['defense_buff', 'counter', 'damage_reduce'],
+    tags: ['defense_buff', 'counter', 'damage_boost'],
     output: [
       // ① 前 4 回合：我军全体防御 +60
       { kind: 'inflict_status', status: { type: 'defense_buff', amount: 60, duration: 4 } },
@@ -6426,15 +6428,16 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
         positions: ['前锋', '中军'],
         status: { type: 'counter', duration: 4, rate: 75 },
       },
-      // ③ 前 4 回合：带「妖术」效果的敌军造成的攻击伤害 −20%（条件减伤，按携带者当前状态实时判定）
+      // ③ 前 4 回合：带「妖术」的敌军造成的攻击伤害 −20%（造成侧，按携带者当前是否有妖术实时判定）
       {
         kind: 'inflict_status',
         targetSide: 'enemy',
         targetMode: 'all',
         status: {
-          type: 'damage_reduce',
-          rate: 0.2,
+          type: 'damage_boost',
+          rate: -0.2,
           duration: 4,
+          direction: 'caused',
           damageType: 'physical',
           requireSelfStatus: 'sorcery',
         },
@@ -8827,7 +8830,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     specialDebuffBefore: {
       rate: 0.5,
       output: [
-        { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.3, duration: 1, direction: 'taken', strategyScaled: true, growthRate: 0.15 } },
+        { kind: 'inflict_status', status: { type: 'damage_boost', rate: 0.3, duration: 1, direction: 'taken', untilRoundEnd: true, strategyScaled: true, growthRate: 0.15 } },
         { kind: 'heal', rate: 65, strategyScaled: true, growthRate: 0.45, targetSide: 'ally', targetMode: 'random_single' },
       ],
     },
@@ -9299,7 +9302,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
                 kind: 'inflict_status',
                 targetSide: 'enemy',
                 targetMode: 'random_single',
-                status: { type: 'damage_boost', rate: -99.99, duration: 1, direction: 'caused' },
+                status: { type: 'damage_boost', rate: -99.99, duration: 1, direction: 'caused', untilRoundEnd: true },
               },
             ],
             // 状态二：暴走 + 攻击距离 −2 + 主动战法距离 −2（同一目标三段，applyAll）
@@ -11492,7 +11495,8 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
    *   ⑤ `BaseSkill.basicHitProc`（合纵连横先例；rate 1 = 必发，仍发 skill_trigger 便于战报核对）：
    *      准备阶段按锁定友军**逐单位注册**，任一被注册友军普攻命中后对**该普攻目标**挂
    *      `damage_boost` direction:'taken' +15%，`stack: true`（官方写「可叠加」）→ 同战法累加、
-   *      duration 1 = 本回合（回合开始施加口径：挂上后回合末正常递减移除，可叠加回合内多次普攻）。
+   *      `untilRoundEnd` = 本回合结束清除（普攻中途挂上，appliedRound≠0，不能靠行动递减；
+   *      否则叠层把 remaining 刷回 1，整场 8 回合都不掉）。
    * 施加时点：四段都挂在**第 1 回合回合开始**（`roundStartRepeat` 无 startRound = 每回合，含第 1 回合）
    * ——官方未写「战斗开始后」（合纵连横写「战斗中」、美人计写「正式回合开始后」），按战斗开始即生效处理。
    */
@@ -11571,7 +11575,7 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       output: [
         {
           kind: 'inflict_status',
-          status: { type: 'damage_boost', rate: 0.15, duration: 1, direction: 'taken', stack: true },
+          status: { type: 'damage_boost', rate: 0.15, duration: 1, direction: 'taken', stack: true, untilRoundEnd: true },
         },
       ],
     },

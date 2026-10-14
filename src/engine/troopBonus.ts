@@ -84,6 +84,8 @@ export function computeTroopBonuses(generals: General[]): TroopBonusResult {
     byUnit.set(g.id, addBonus(byUnit.get(g.id) ?? ZERO_BONUS, line.bonuses));
   };
 
+  const present = new Set(sorted.map((x) => x.id));
+
   for (const g of sorted) {
     const nFac = facCount.get(g.faction) ?? 0;
     const facRate = nFac >= 3 ? 10 : nFac === 2 ? 8 : 0;
@@ -95,9 +97,9 @@ export function computeTroopBonuses(generals: General[]): TroopBonusResult {
       });
     }
 
-    const present = new Set(sorted.map((x) => x.id));
     for (const title of TITLE_REGISTRY) {
-      if (!title.memberIds.every((id) => present.has(id))) continue;
+      const groups = title.trios ?? [title.memberIds];
+      if (!groups.some((ids) => ids.every((id) => present.has(id)))) continue;
       const bonuses = cloneBonus();
       for (const e of title.effects) bonuses[e.stat] += e.amount;
       addLine(g, {

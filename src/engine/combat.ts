@@ -10,6 +10,8 @@ import { Rng } from './rng';
 import { actUnit, triggerCommandSkills, triggerPassiveSkills, triggerDelayedOutputs, triggerPendingRoundOutputs, triggerRangeDecayPassives, triggerRoundEndCommands, triggerImperialDecrees, triggerRoundStartChance, triggerRoundEndChanceOutputs, tickStatuses, tickRoundStartStatuses, effectiveStat, grantSecondaryTroopStatuses, decayWoundedPool, type CombatContext } from './action';
 import { computeStats } from './stats';
 import { SKILL_REGISTRY } from '../data/skills';
+import { BAIJIA_SKILLS } from '../data/baijia';
+import { applyBaijia } from './baijia';
 import { validateMutualExclusion } from '../data/hero-utils';
 import { computeTroopBonuses } from './troopBonus';
 import { applyTreasureEffects, triggerTreasureRoundStart } from './treasure';
@@ -64,10 +66,15 @@ export function runBattle(config: BattleConfig): BattleReport {
   if (conflict) throw new Error(`配队非法：${conflict}`);
   const rng = new Rng(config.seed);
   const events: BattleEvent[] = [];
-  const skills: Map<string, Skill> = new Map(Object.entries(SKILL_REGISTRY));
+  const skills: Map<string, Skill> = new Map([
+    ...Object.entries(SKILL_REGISTRY),
+    ...Object.entries(BAIJIA_SKILLS),
+  ]);
+  const myGenerals = teams.myTeam.map(applyBaijia);
+  const enemyGenerals = teams.enemyTeam.map(applyBaijia);
 
-  const myTeam = toUnitStates(teams.myTeam, 'my', config.inertSides?.includes('my') === true);
-  const enemyTeam = toUnitStates(teams.enemyTeam, 'enemy', config.inertSides?.includes('enemy') === true);
+  const myTeam = toUnitStates(myGenerals, 'my', config.inertSides?.includes('my') === true);
+  const enemyTeam = toUnitStates(enemyGenerals, 'enemy', config.inertSides?.includes('enemy') === true);
 
   const ctx: CombatContext = {
     rng,

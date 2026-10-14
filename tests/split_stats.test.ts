@@ -308,6 +308,35 @@ describe('其徐如林（策略伤害相邻跳伤）：伤害记在该战法统�
     const simaStats = detailed.find((d) => d.unitId === 'sima')!;
     expect(simaStats.skills.find((s) => s.skillId === 'qixu_rulin')?.damage ?? 0).toBe(qxSum);
   });
+
+  it('友军打出的相邻跳伤记进司马懿的【其徐如林】，不挂在友军名下', () => {
+    let report: ReturnType<typeof runBattle> | undefined;
+    for (let seed = 1; seed <= 40 && !report; seed++) {
+      const sima: General = dummy('sima', '大营', { commandSkillIds: ['qixu_rulin'] });
+      sima.mainSkillId = 'qixu_rulin';
+      const r = runBattle({
+        seed,
+        maxRounds: 8,
+        myTeam: [dummy('front', '前锋', { activeSkillIds: ['jiagong'] }), dummy('mid', '中军'), sima],
+        enemyTeam: [dummy('e1', '前锋'), dummy('e2', '中军'), dummy('e3', '大营')],
+      });
+      const hit = r.events.some((e) => e.type === 'damage' && e.skillId === 'qixu_rulin' && e.sourceId === 'front');
+      if (hit) report = r;
+    }
+    expect(report, '前锋夹攻应打出其徐如林相邻跳伤').toBeTruthy();
+
+    const qx = report!.events.filter(
+      (e): e is Extract<BattleEvent, { type: 'damage' }> =>
+        e.type === 'damage' && e.skillId === 'qixu_rulin' && e.sourceId === 'front'
+    );
+    expect(qx.length).toBeGreaterThan(0);
+    for (const e of qx) expect(e.creditToId).toBe('sima');
+
+    const detailed = computeDetailedStats(report!.events, unitsOf(report!));
+    const qxSum = qx.reduce((a, e) => a + e.damage, 0);
+    expect(detailed.find((d) => d.unitId === 'sima')!.skills.find((s) => s.skillId === 'qixu_rulin')?.damage ?? 0).toBe(qxSum);
+    expect(detailed.find((d) => d.unitId === 'front')!.skills.find((s) => s.skillId === 'qixu_rulin')).toBeUndefined();
+  });
 });
 
 describe('机制层：分兵状态记住授予者，事件带 skillId / creditToId', () => {

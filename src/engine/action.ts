@@ -1066,7 +1066,9 @@ export function triggerCommandSkills(ctx: CombatContext, unit: UnitState): void 
       !skill.healOnDamage &&
       !skill.avoidOnConsume
     ) {
-      executeSkillOutputs(ctx, unit, skill, targets);
+      if (skill.castChance == null || rollCastChance(ctx, unit, skill, skill.castChance)) {
+        executeSkillOutputs(ctx, unit, skill, targets);
+      }
     }
   }
 }
@@ -1206,6 +1208,7 @@ function noteTeamDamage(ctx: CombatContext, source: UnitState): void {
  * （伤害率 = 原伤害率 × 当前比例；比例 = baseRate + perRound × (当前回合 - 1)，可叠至战斗结束）。
  *  - 光环注册于 `ctx.lockedCommands`（一类指挥）；仅覆盖与施法者**同侧**的伤害来源，施法者阵亡即失效。
  *  - 额外伤害由**原伤害的造成者**结算（沿用其攻击/兵力/增减伤口径），战报 skillId / skillName 记为其徐如林。
+ *  - 统计归属光环施法者：友军打出时写 `creditToId`（司马懿的【其徐如林】栏），施法者自己打出则沿用 sourceId。
  *  - 直接构造 damage 事件（不经 strategy_damage 输出分支）→ 不会递归触发本光环。
  */
 function triggerStrategyAdjacentBonus(
@@ -1268,6 +1271,7 @@ function triggerStrategyAdjacentBonus(
         damage: capped,
         breakdown,
         modifiers: mods,
+        creditToId: source.general.id === owner.general.id ? undefined : owner.general.id,
       });
       applyDamage(ctx, raw, capped, source, 'strategy', 'skill', mods, { skillType: l.skill.type });
     }
@@ -2734,6 +2738,11 @@ function isNextActTickStatus(s: Status): s is NextActTickStatus {
   return true;
 }
 
+/** 本回合结束清除（计险远近普攻增伤）：回合末 tickStatuses 移除，不按携带者行动递减。 */
+function expiresAtRoundEnd(s: Status): boolean {
+  return s.type === 'damage_boost' && s.untilRoundEnd === true;
+}
+
 /** 行动中施加的状态（appliedRound>0）按**递减时点**分三路（用户口径 2026-09-20，承接 8032010）：
  *  - **第 1 组 + 其余行动计数型**：携带者行动**结束**后递减、到 0 才移除 —— `duration N`
  *    = 目标接下来 **N 次行动**都生效，与双方出手先后无关（旧实现在行动开始前递减，
@@ -2777,6 +2786,7 @@ function markStatusesOnActStart(ctx: CombatContext, unit: UnitState): ActEndCoun
     // first_aid：remaining 递减（Infinity 整场常驻恒不减；金匮要略前 3 回合到期移除）
     if (s.type === 'rest') continue; // 休整 remaining 只在跳恢复时递减
     if (s.appliedRound === 0) continue; // 行动前施加：回合末递减
+    if (expiresAtRoundEnd(s)) continue; // 本回合结束清除：不跟携带者行动走
     // 窗口/时点型例外：保持旧的「行动开始前递减 + 即时移除」（同回合刚施加的仍不计数）
     if (s.type === 'priority' || s.type === 'counter') {
       if (s.appliedRound >= ctx.currentRound) continue;
@@ -2818,6 +2828,7 @@ function tickStatusesOnActEnd(
   }
   for (const s of [...unit.statuses]) {
     if (statusesAtActStart.has(s)) continue; // 行动开始时已在身：已在行动开始处递减过
+    if (expiresAtRoundEnd(s)) continue;
     if (!isNextActTickStatus(s)) continue;
     // 待下次行动再生效的暴走 / 怯战：生效时点由 markStatusesOnActStart 的激活分支单独控制
     if ((s.type === 'rampage' || s.type === 'cowardice') && s.pendingNextAct) continue;
@@ -4381,6 +4392,9 @@ function pushStatus(
     else (push as { rate: number }).rate = create.rate;
     // 增减伤方向（damage_boost 才有）：缺省 'taken'（受到侧）
     if (type === 'damage_boost') (push as { direction: 'caused' | 'taken' }).direction = create.direction ?? 'taken';
+    if (type === 'damage_boost' && 'untilRoundEnd' in create && create.untilRoundEnd) {
+      (push as { untilRoundEnd?: true }).untilRoundEnd = true;
+    }
     // 叠层计数（带上限的增减伤，银龙冲阵最多 3 层 / 张昭 竭忠尽智减伤最多 2 层）：首层记 1，同战法累加时 +1
     if ((type === 'damage_boost' || type === 'damage_reduce') && 'stacks' in create) (push as { stacks?: number }).stacks = create.stacks ?? 1;
     // 叠层上限：damage_reduce / 属性类也纳入（拷贝 maxStacks；未显式给 stacks 初值时按「首层」初始化 stacks = 1，
@@ -4891,6 +4905,7 @@ export function triggerRangeDecayPassives(ctx: CombatContext): void {
 }
 
 /** 回合结束：只递减「行动前施加」（appliedRound=0，准备阶段）的计数器回合，到 0 移除。
+ *  `untilRoundEnd` 的增伤在此直接移除（本回合结束，不跟携带者行动走）。
  *  行动中施加（appliedRound>0）的：第 1 组 + 其余行动计数型由携带者行动结束后的
  *  tickStatusesOnActEnd 递减；第 2 组（控制/属性/增减伤/连击/分兵）由行动开始时的 markStatusesOnActStart
  *  递减（到期项下次行动开始时移除）；窗口/时点型（priority/counter）也在行动开始时递减，均不在此处理。 */
@@ -4902,6 +4917,11 @@ export function tickStatuses(ctx: CombatContext, units: UnitState[]): void {
         if (s.stacks <= 0) {
           unit.statuses = unit.statuses.filter((x) => x !== s);
         }
+        continue;
+      }
+      if (expiresAtRoundEnd(s)) {
+        unit.statuses = unit.statuses.filter((x) => x !== s);
+        ctx.events.push({ type: 'status_expired', unitId: unit.general.id, statusType: s.type });
         continue;
       }
       if (s.appliedRound !== 0) continue; // 行动中施加：下次行动开始前递减
@@ -6829,8 +6849,38 @@ function triggerCastKindHooks(
       if (kind === 'active' && skill.allyActiveCastStack) {
         inflictStatus(ctx, holder, skill.allyActiveCastStack.status, skill.type, skill.id, holder.general.id);
       }
+      const allyCast = skill.type === 'command' ? skill.afterAllyCast : undefined;
+      if (allyCast && allyCast.kinds.includes(kind)) {
+        if (allyCast.startRound == null || ctx.currentRound >= allyCast.startRound) {
+          executeSkillOutputs(ctx, holder, skill, [actor], allyCast.output);
+        }
+      }
     }
   }
+}
+
+/**
+ * 一类指挥整段发动率（百家靖边·镇静）。一次判定，命中后本次锁定目标全部结算。
+ * @param ctx 战斗上下文
+ * @param unit 携带者
+ * @param skill 指挥战法
+ * @param base 基础发动率 0~1
+ */
+function rollCastChance(ctx: CombatContext, unit: UnitState, skill: Skill, base: number): boolean {
+  const morale = effectiveMorale(unit);
+  const rate = moraleTriggerRate(morale, base);
+  const success = ctx.rng.chance(rate);
+  ctx.events.push({
+    type: 'skill_trigger',
+    unitId: unit.general.id,
+    skillId: skill.id,
+    skillName: skill.name,
+    success,
+    rate: Math.round(rate * 100),
+    baseRate: Math.round(base * 100),
+    morale,
+  });
+  return success;
 }
 
 /**

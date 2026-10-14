@@ -236,6 +236,7 @@ describe('计险远近（A 指挥：3 将基础攻击距离互不相同 → 大�
       expect(boostOut.status.direction).toBe('taken');
       expect(boostOut.status.stack).toBe(true);
       expect(boostOut.status.duration).toBe(1); // 本回合
+      expect(boostOut.status.untilRoundEnd).toBe(true); // 回合结束清除，不跟目标行动走
     }
 
     // 非武将主战法 → 无需下架登记（典籍战法可作为装配战法出现）
@@ -454,6 +455,34 @@ describe('计险远近（A 指挥：3 将基础攻击距离互不相同 → 大�
     // 显式 stack: true → 同源重复施加累加（不带「可叠加」标记的效果一律刷新）
     if (stacked?.type === 'damage_boost') expect(stacked.rate).toBeCloseTo(0.3, 6);
     else throw new Error('期望目标身上有计险远近的受伤提升');
+  });
+
+  it('普攻增伤：同回合可叠加，回合结束清除，下回合从 15% 重计', () => {
+    const ctx = makeCtx(team(), [dummy('enemy-front', '前锋', 2)]);
+    triggerCommandSkills(ctx, ctx.myTeam[0]);
+    const target = isolateTarget(ctx);
+    const front = byPos(ctx, '前锋');
+    const mid = byPos(ctx, '中军');
+    front.general.attackRange = 5;
+    mid.general.attackRange = 5;
+    front.general.attack = 200;
+    mid.general.attack = 200;
+
+    actUnit(ctx, front);
+    actUnit(ctx, mid);
+    const stacked = statusOf(target, 'damage_boost');
+    if (stacked?.type !== 'damage_boost') throw new Error('期望同回合两次普攻叠成受伤提升');
+    expect(stacked.rate).toBeCloseTo(0.3, 6);
+
+    tickStatuses(ctx, [...ctx.myTeam, ...ctx.enemyTeam]);
+    expect(statusOf(target, 'damage_boost')).toBeUndefined();
+
+    ctx.currentRound = 2;
+    front.hasActedThisRound = false;
+    actUnit(ctx, front);
+    const again = statusOf(target, 'damage_boost');
+    if (again?.type !== 'damage_boost') throw new Error('期望下回合重新挂上受伤提升');
+    expect(again.rate).toBeCloseTo(0.15, 6);
   });
 
   it('普攻增伤：数值真的吃到（同种子双跑：增伤后单次普攻伤害更高，且 < 115%）', () => {
