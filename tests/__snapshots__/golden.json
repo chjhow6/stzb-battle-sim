@@ -10108,8 +10108,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -10425,8 +10425,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -10706,8 +10706,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -10965,8 +10965,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": true,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -11695,8 +11695,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -11995,8 +11995,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -12289,8 +12289,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": true,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -13029,8 +13029,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": true,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -14135,8 +14135,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": true,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -15128,8 +15128,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -15525,8 +15525,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -15902,8 +15902,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -16325,8 +16325,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -16821,8 +16821,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": true,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -17469,8 +17469,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -17728,8 +17728,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -18035,8 +18035,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": true,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -18698,8 +18698,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -18973,8 +18973,8 @@
           "skillId": "xuanwu_fuliu",
           "skillName": "玄武洰流",
           "success": false,
-          "rate": 40,
-          "baseRate": 40,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -19119,19 +19119,19 @@
     {
       "name": "T9_COMMAND_MECHANICS_L40",
       "seed": 10009,
-      "result": "draw",
+      "result": "win",
       "rounds": 8,
       "finalMyTroops": [
-        6482,
-        8807,
+        7055,
+        8553,
         9000
       ],
       "finalEnemyTroops": [
+        2261,
         0,
-        3773,
-        3689
+        0
       ],
-      "eventCount": 239,
+      "eventCount": 255,
       "events": [
         {
           "type": "battle_start",
@@ -19289,8 +19289,8 @@
           "unitId": "lvmeng",
           "skillId": "baiyi_dujiang",
           "targetIds": [
-            "enemy-front",
-            "enemy-mid"
+            "enemy-mid",
+            "enemy-back"
           ]
         },
         {
@@ -19614,30 +19614,6 @@
           "unitId": "weiyan"
         },
         {
-          "type": "unit_act_start",
-          "unitId": "lvmeng",
-          "name": "吕蒙",
-          "position": "中军",
-          "phase": "command_skill"
-        },
-        {
-          "type": "skill_trigger",
-          "unitId": "lvmeng",
-          "targetId": "enemy-front",
-          "skillId": "baiyi_dujiang",
-          "skillName": "白衣渡江",
-          "success": true,
-          "rate": 100,
-          "baseRate": 100,
-          "morale": 100
-        },
-        {
-          "type": "status_inflicted",
-          "unitId": "enemy-front",
-          "statusType": "cowardice",
-          "detail": "怯战 1 回合"
-        },
-        {
           "type": "no_attack_target",
           "unitId": "enemy-front",
           "name": "木桩前锋",
@@ -19690,6 +19666,30 @@
         },
         {
           "type": "unit_act_start",
+          "unitId": "lvmeng",
+          "name": "吕蒙",
+          "position": "中军",
+          "phase": "command_skill"
+        },
+        {
+          "type": "skill_trigger",
+          "unitId": "lvmeng",
+          "targetId": "enemy-back",
+          "skillId": "baiyi_dujiang",
+          "skillName": "白衣渡江",
+          "success": true,
+          "rate": 100,
+          "baseRate": 100,
+          "morale": 100
+        },
+        {
+          "type": "status_inflicted",
+          "unitId": "enemy-back",
+          "statusType": "cowardice",
+          "detail": "怯战 1 回合"
+        },
+        {
+          "type": "unit_act_start",
           "unitId": "enemy-back",
           "name": "木桩大营",
           "position": "大营",
@@ -19699,7 +19699,7 @@
           "type": "no_attack_target",
           "unitId": "enemy-back",
           "name": "木桩大营",
-          "reason": "攻击距离 2 内无存活敌军"
+          "reason": "怯战：无法进行普通攻击"
         },
         {
           "type": "unit_act_end",
@@ -19890,40 +19890,28 @@
         },
         {
           "type": "unit_act_start",
-          "unitId": "lvmeng",
-          "name": "吕蒙",
-          "position": "中军",
-          "phase": "command_skill"
-        },
-        {
-          "type": "skill_trigger",
-          "unitId": "lvmeng",
-          "targetId": "enemy-front",
-          "skillId": "baiyi_dujiang",
-          "skillName": "白衣渡江",
-          "success": true,
-          "rate": 100,
-          "baseRate": 100,
-          "morale": 100
-        },
-        {
-          "type": "status_inflicted",
-          "unitId": "enemy-front",
-          "statusType": "cowardice",
-          "detail": "怯战 1 回合"
-        },
-        {
-          "type": "unit_act_start",
           "unitId": "enemy-front",
           "name": "木桩前锋",
           "position": "前锋",
           "phase": "normal_attack"
         },
         {
-          "type": "no_attack_target",
-          "unitId": "enemy-front",
-          "name": "木桩前锋",
-          "reason": "怯战：无法进行普通攻击"
+          "type": "attack_hit",
+          "sourceId": "enemy-front",
+          "targetId": "taishici",
+          "distance": 2,
+          "damage": 268,
+          "breakdown": {
+            "troopBase": 163,
+            "base": 20,
+            "main": 85
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 8732
         },
         {
           "type": "unit_act_end",
@@ -19972,6 +19960,30 @@
         },
         {
           "type": "unit_act_start",
+          "unitId": "lvmeng",
+          "name": "吕蒙",
+          "position": "中军",
+          "phase": "command_skill"
+        },
+        {
+          "type": "skill_trigger",
+          "unitId": "lvmeng",
+          "targetId": "enemy-back",
+          "skillId": "baiyi_dujiang",
+          "skillName": "白衣渡江",
+          "success": true,
+          "rate": 100,
+          "baseRate": 100,
+          "morale": 100
+        },
+        {
+          "type": "status_inflicted",
+          "unitId": "enemy-back",
+          "statusType": "cowardice",
+          "detail": "怯战 1 回合"
+        },
+        {
+          "type": "unit_act_start",
           "unitId": "enemy-back",
           "name": "木桩大营",
           "position": "大营",
@@ -19981,7 +19993,7 @@
           "type": "no_attack_target",
           "unitId": "enemy-back",
           "name": "木桩大营",
-          "reason": "攻击距离 2 内无存活敌军"
+          "reason": "怯战：无法进行普通攻击"
         },
         {
           "type": "unit_act_end",
@@ -19992,7 +20004,7 @@
           "round": 2,
           "myTroops": [
             9000,
-            9000,
+            8732,
             9000
           ],
           "enemyTroops": [
@@ -20002,7 +20014,7 @@
           ],
           "myWounded": [
             0,
-            0,
+            255,
             0
           ],
           "enemyWounded": [
@@ -20012,7 +20024,7 @@
           ],
           "myDead": [
             0,
-            0,
+            13,
             0
           ],
           "enemyDead": [
@@ -20115,271 +20127,13 @@
         {
           "type": "attack_hit",
           "sourceId": "taishici",
-          "targetId": "enemy-front",
-          "distance": 2,
-          "damage": 521,
-          "breakdown": {
-            "troopBase": 201,
-            "base": 63,
-            "main": 257
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": [
-              {
-                "unitId": "enemy-front",
-                "skillId": "troop_counter",
-                "skillName": "兵种克制",
-                "rate": 0.3,
-                "direction": "reduce"
-              }
-            ]
-          },
-          "afterTroops": 4570
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "taishici",
-          "name": "太史慈",
-          "position": "前锋",
-          "phase": "pursuit_skill"
-        },
-        {
-          "type": "skill_trigger",
-          "unitId": "taishici",
-          "skillId": "fangzhen_tuji",
-          "skillName": "方阵突击",
-          "success": false,
-          "rate": 30,
-          "baseRate": 30,
-          "morale": 100
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "taishici"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "lvmeng",
-          "name": "吕蒙",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "lvmeng",
-          "targetId": "enemy-front",
-          "distance": 3,
-          "damage": 459,
-          "breakdown": {
-            "troopBase": 201,
-            "base": 43,
-            "main": 215
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": [
-              {
-                "unitId": "enemy-front",
-                "skillId": "troop_counter",
-                "skillName": "兵种克制",
-                "rate": 0.3,
-                "direction": "reduce"
-              }
-            ]
-          },
-          "afterTroops": 4111
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "lvmeng"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "weiyan",
-          "name": "魏延",
-          "position": "前锋",
-          "phase": "command_skill"
-        },
-        {
-          "type": "skill_trigger",
-          "unitId": "weiyan",
-          "skillId": "qibing_jubei",
-          "skillName": "奇兵拒北",
-          "success": false,
-          "rate": 35,
-          "baseRate": 35,
-          "morale": 100
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "weiyan",
-          "name": "魏延",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "weiyan",
-          "targetId": "enemy-front",
-          "distance": 1,
-          "damage": 630,
-          "breakdown": {
-            "troopBase": 201,
-            "base": 81,
-            "main": 348
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 3481
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "weiyan"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-front",
-          "name": "木桩前锋",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-front",
-          "targetId": "weiyan",
-          "distance": 1,
-          "damage": 214,
-          "breakdown": {
-            "troopBase": 116,
-            "base": 22,
-            "main": 76
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 8786
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-front"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-mid",
-          "name": "木桩中军",
-          "position": "中军",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-mid",
-          "targetId": "weiyan",
-          "distance": 2,
-          "damage": 310,
-          "breakdown": {
-            "troopBase": 183,
-            "base": 23,
-            "main": 104
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 8476
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-mid"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-back",
-          "name": "木桩大营",
-          "position": "大营",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "no_attack_target",
-          "unitId": "enemy-back",
-          "name": "木桩大营",
-          "reason": "攻击距离 2 内无存活敌军"
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-back"
-        },
-        {
-          "type": "round_end",
-          "round": 3,
-          "myTroops": [
-            8476,
-            9000,
-            9000
-          ],
-          "enemyTroops": [
-            3481,
-            7447,
-            7429
-          ],
-          "myWounded": [
-            497,
-            0,
-            0
-          ],
-          "enemyWounded": [
-            5385,
-            2019,
-            2031
-          ],
-          "myDead": [
-            27,
-            0,
-            0
-          ],
-          "enemyDead": [
-            1134,
-            534,
-            540
-          ]
-        },
-        {
-          "type": "round_start",
-          "round": 4,
-          "turnOrder": [
-            "taishici",
-            "lvmeng",
-            "weiyan",
-            "enemy-front",
-            "enemy-mid",
-            "enemy-back"
-          ]
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "taishici",
-          "name": "太史慈",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "taishici",
           "targetId": "enemy-back",
           "distance": 4,
-          "damage": 521,
+          "damage": 507,
           "breakdown": {
-            "troopBase": 201,
-            "base": 63,
-            "main": 257
+            "troopBase": 198,
+            "base": 54,
+            "main": 255
           },
           "modifiers": {
             "caused": [],
@@ -20394,265 +20148,7 @@
               }
             ]
           },
-          "afterTroops": 6908
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "taishici",
-          "name": "太史慈",
-          "position": "前锋",
-          "phase": "pursuit_skill"
-        },
-        {
-          "type": "skill_trigger",
-          "unitId": "taishici",
-          "skillId": "fangzhen_tuji",
-          "skillName": "方阵突击",
-          "success": false,
-          "rate": 30,
-          "baseRate": 30,
-          "morale": 100
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "taishici"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "lvmeng",
-          "name": "吕蒙",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "lvmeng",
-          "targetId": "enemy-front",
-          "distance": 3,
-          "damage": 451,
-          "breakdown": {
-            "troopBase": 201,
-            "base": 35,
-            "main": 215
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": [
-              {
-                "unitId": "enemy-front",
-                "skillId": "troop_counter",
-                "skillName": "兵种克制",
-                "rate": 0.3,
-                "direction": "reduce"
-              }
-            ]
-          },
-          "afterTroops": 3030
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "lvmeng"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "weiyan",
-          "name": "魏延",
-          "position": "前锋",
-          "phase": "command_skill"
-        },
-        {
-          "type": "skill_trigger",
-          "unitId": "weiyan",
-          "skillId": "qibing_jubei",
-          "skillName": "奇兵拒北",
-          "success": false,
-          "rate": 40,
-          "baseRate": 40,
-          "morale": 100
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "weiyan",
-          "name": "魏延",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "weiyan",
-          "targetId": "enemy-front",
-          "distance": 1,
-          "damage": 612,
-          "breakdown": {
-            "troopBase": 195,
-            "base": 75,
-            "main": 342
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 2418
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "weiyan"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-front",
-          "name": "木桩前锋",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-front",
-          "targetId": "weiyan",
-          "distance": 1,
-          "damage": 170,
-          "breakdown": {
-            "troopBase": 89,
-            "base": 18,
-            "main": 63
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 8306
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-front"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-mid",
-          "name": "木桩中军",
-          "position": "中军",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-mid",
-          "targetId": "weiyan",
-          "distance": 2,
-          "damage": 307,
-          "breakdown": {
-            "troopBase": 183,
-            "base": 20,
-            "main": 104
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 7999
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-mid"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-back",
-          "name": "木桩大营",
-          "position": "大营",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "no_attack_target",
-          "unitId": "enemy-back",
-          "name": "木桩大营",
-          "reason": "攻击距离 2 内无存活敌军"
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-back"
-        },
-        {
-          "type": "round_end",
-          "round": 4,
-          "myTroops": [
-            7999,
-            9000,
-            9000
-          ],
-          "enemyTroops": [
-            2418,
-            7447,
-            6908
-          ],
-          "myWounded": [
-            880,
-            0,
-            0
-          ],
-          "enemyWounded": [
-            5640,
-            1736,
-            2242
-          ],
-          "myDead": [
-            121,
-            0,
-            0
-          ],
-          "enemyDead": [
-            1942,
-            817,
-            850
-          ]
-        },
-        {
-          "type": "round_start",
-          "round": 5,
-          "turnOrder": [
-            "taishici",
-            "lvmeng",
-            "weiyan",
-            "enemy-front",
-            "enemy-mid",
-            "enemy-back"
-          ]
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "taishici",
-          "name": "太史慈",
-          "position": "前锋",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "taishici",
-          "targetId": "enemy-front",
-          "distance": 2,
-          "damage": 510,
-          "breakdown": {
-            "troopBase": 201,
-            "base": 52,
-            "main": 257
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": [
-              {
-                "unitId": "enemy-front",
-                "skillId": "troop_counter",
-                "skillName": "兵种克制",
-                "rate": 0.3,
-                "direction": "reduce"
-              }
-            ]
-          },
-          "afterTroops": 1908
+          "afterTroops": 6922
         },
         {
           "type": "unit_act_start",
@@ -20725,8 +20221,8 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "success": false,
-          "rate": 45,
-          "baseRate": 45,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -20741,18 +20237,18 @@
           "sourceId": "weiyan",
           "targetId": "enemy-front",
           "distance": 1,
-          "damage": 596,
+          "damage": 626,
           "breakdown": {
-            "troopBase": 190,
-            "base": 70,
-            "main": 336
+            "troopBase": 201,
+            "base": 77,
+            "main": 348
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 1312
+          "afterTroops": 4465
         },
         {
           "type": "unit_act_end",
@@ -20768,20 +20264,20 @@
         {
           "type": "attack_hit",
           "sourceId": "enemy-front",
-          "targetId": "taishici",
-          "distance": 2,
-          "damage": 111,
+          "targetId": "weiyan",
+          "distance": 1,
+          "damage": 246,
           "breakdown": {
-            "troopBase": 54,
-            "base": 20,
-            "main": 37
+            "troopBase": 137,
+            "base": 23,
+            "main": 86
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 8889
+          "afterTroops": 8754
         },
         {
           "type": "unit_act_end",
@@ -20799,10 +20295,10 @@
           "sourceId": "enemy-mid",
           "targetId": "weiyan",
           "distance": 2,
-          "damage": 301,
+          "damage": 303,
           "breakdown": {
             "troopBase": 178,
-            "base": 21,
+            "base": 23,
             "main": 102
           },
           "modifiers": {
@@ -20810,7 +20306,678 @@
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 7698
+          "afterTroops": 8451
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-mid"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "enemy-back",
+          "name": "木桩大营",
+          "position": "大营",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "no_attack_target",
+          "unitId": "enemy-back",
+          "name": "木桩大营",
+          "reason": "攻击距离 2 内无存活敌军"
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-back"
+        },
+        {
+          "type": "round_end",
+          "round": 3,
+          "myTroops": [
+            8451,
+            8732,
+            9000
+          ],
+          "enemyTroops": [
+            4465,
+            6993,
+            6922
+          ],
+          "myWounded": [
+            522,
+            219,
+            0
+          ],
+          "enemyWounded": [
+            4451,
+            2450,
+            2513
+          ],
+          "myDead": [
+            27,
+            49,
+            0
+          ],
+          "enemyDead": [
+            1084,
+            557,
+            565
+          ]
+        },
+        {
+          "type": "round_start",
+          "round": 4,
+          "turnOrder": [
+            "taishici",
+            "lvmeng",
+            "weiyan",
+            "enemy-front",
+            "enemy-mid",
+            "enemy-back"
+          ]
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "taishici",
+          "name": "太史慈",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "taishici",
+          "targetId": "enemy-back",
+          "distance": 4,
+          "damage": 508,
+          "breakdown": {
+            "troopBase": 198,
+            "base": 55,
+            "main": 255
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-back",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 6414
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "taishici",
+          "name": "太史慈",
+          "position": "前锋",
+          "phase": "pursuit_skill"
+        },
+        {
+          "type": "skill_trigger",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击",
+          "success": true,
+          "rate": 30,
+          "baseRate": 30,
+          "morale": 100
+        },
+        {
+          "type": "skill_target",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "targetIds": [
+            "enemy-back"
+          ]
+        },
+        {
+          "type": "skill_cast",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击"
+        },
+        {
+          "type": "damage",
+          "sourceId": "taishici",
+          "targetId": "enemy-back",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击",
+          "damageType": "physical",
+          "damage": 831,
+          "breakdown": {
+            "troopBase": 198,
+            "base": 123,
+            "main": 510
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-back",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 5583
+        },
+        {
+          "type": "status_inflicted",
+          "unitId": "enemy-back",
+          "statusType": "confusion",
+          "detail": "混乱 1 回合"
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "taishici"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "lvmeng",
+          "name": "吕蒙",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "lvmeng",
+          "targetId": "enemy-front",
+          "distance": 3,
+          "damage": 457,
+          "breakdown": {
+            "troopBase": 201,
+            "base": 41,
+            "main": 215
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-front",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 4008
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "lvmeng"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "weiyan",
+          "name": "魏延",
+          "position": "前锋",
+          "phase": "command_skill"
+        },
+        {
+          "type": "skill_trigger",
+          "unitId": "weiyan",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "success": true,
+          "rate": 40,
+          "baseRate": 40,
+          "morale": 100
+        },
+        {
+          "type": "skill_target",
+          "unitId": "weiyan",
+          "skillId": "qibing_jubei",
+          "targetIds": [
+            "enemy-front",
+            "enemy-mid",
+            "enemy-back"
+          ]
+        },
+        {
+          "type": "skill_cast",
+          "unitId": "weiyan",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北"
+        },
+        {
+          "type": "damage",
+          "sourceId": "weiyan",
+          "targetId": "enemy-mid",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "damageType": "physical",
+          "damage": 922,
+          "breakdown": {
+            "troopBase": 195,
+            "base": 112,
+            "main": 615
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 6071
+        },
+        {
+          "type": "damage",
+          "sourceId": "weiyan",
+          "targetId": "enemy-back",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "damageType": "physical",
+          "damage": 952,
+          "breakdown": {
+            "troopBase": 195,
+            "base": 142,
+            "main": 615
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 4631
+        },
+        {
+          "type": "damage",
+          "sourceId": "taishici",
+          "creditToId": "weiyan",
+          "targetId": "enemy-mid",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "damageType": "physical",
+          "damage": 655,
+          "breakdown": {
+            "troopBase": 198,
+            "base": 77,
+            "main": 380
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-mid",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 5416
+        },
+        {
+          "type": "damage",
+          "sourceId": "taishici",
+          "creditToId": "weiyan",
+          "targetId": "enemy-back",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "damageType": "physical",
+          "damage": 655,
+          "breakdown": {
+            "troopBase": 198,
+            "base": 77,
+            "main": 380
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-back",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 3976
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "weiyan",
+          "name": "魏延",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "weiyan",
+          "targetId": "enemy-mid",
+          "distance": 2,
+          "damage": 612,
+          "breakdown": {
+            "troopBase": 195,
+            "base": 75,
+            "main": 342
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 4804
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "weiyan"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "enemy-front",
+          "name": "木桩前锋",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "enemy-front",
+          "targetId": "weiyan",
+          "distance": 1,
+          "damage": 231,
+          "breakdown": {
+            "troopBase": 128,
+            "base": 21,
+            "main": 82
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 8220
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-front"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "enemy-mid",
+          "name": "木桩中军",
+          "position": "中军",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "enemy-mid",
+          "targetId": "weiyan",
+          "distance": 2,
+          "damage": 252,
+          "breakdown": {
+            "troopBase": 143,
+            "base": 20,
+            "main": 89
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 7968
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-mid"
+        },
+        {
+          "type": "no_attack_target",
+          "unitId": "enemy-back",
+          "name": "木桩大营",
+          "reason": "混乱：无法行动"
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-back"
+        },
+        {
+          "type": "round_end",
+          "round": 4,
+          "myTroops": [
+            7968,
+            8732,
+            9000
+          ],
+          "enemyTroops": [
+            4008,
+            4804,
+            3976
+          ],
+          "myWounded": [
+            907,
+            188,
+            0
+          ],
+          "enemyWounded": [
+            4262,
+            4186,
+            4959
+          ],
+          "myDead": [
+            125,
+            80,
+            0
+          ],
+          "enemyDead": [
+            1730,
+            1010,
+            1065
+          ]
+        },
+        {
+          "type": "round_start",
+          "round": 5,
+          "turnOrder": [
+            "taishici",
+            "lvmeng",
+            "weiyan",
+            "enemy-front",
+            "enemy-mid",
+            "enemy-back"
+          ]
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "taishici",
+          "name": "太史慈",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "taishici",
+          "targetId": "enemy-mid",
+          "distance": 3,
+          "damage": 508,
+          "breakdown": {
+            "troopBase": 198,
+            "base": 55,
+            "main": 255
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-mid",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 4296
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "taishici",
+          "name": "太史慈",
+          "position": "前锋",
+          "phase": "pursuit_skill"
+        },
+        {
+          "type": "skill_trigger",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击",
+          "success": false,
+          "rate": 30,
+          "baseRate": 30,
+          "morale": 100
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "taishici"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "lvmeng",
+          "name": "吕蒙",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "lvmeng",
+          "targetId": "enemy-mid",
+          "distance": 4,
+          "damage": 459,
+          "breakdown": {
+            "troopBase": 201,
+            "base": 43,
+            "main": 215
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-mid",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 3837
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "lvmeng"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "weiyan",
+          "name": "魏延",
+          "position": "前锋",
+          "phase": "command_skill"
+        },
+        {
+          "type": "skill_trigger",
+          "unitId": "weiyan",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "success": false,
+          "rate": 30,
+          "baseRate": 30,
+          "morale": 100
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "weiyan",
+          "name": "魏延",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "weiyan",
+          "targetId": "enemy-front",
+          "distance": 1,
+          "damage": 594,
+          "breakdown": {
+            "troopBase": 190,
+            "base": 68,
+            "main": 336
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 3414
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "weiyan"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "enemy-front",
+          "name": "木桩前锋",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "enemy-front",
+          "targetId": "weiyan",
+          "distance": 1,
+          "damage": 212,
+          "breakdown": {
+            "troopBase": 115,
+            "base": 21,
+            "main": 76
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 7756
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-front"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "enemy-mid",
+          "name": "木桩中军",
+          "position": "中军",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "enemy-mid",
+          "targetId": "weiyan",
+          "distance": 2,
+          "damage": 222,
+          "breakdown": {
+            "troopBase": 124,
+            "base": 18,
+            "main": 80
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 7534
         },
         {
           "type": "unit_act_end",
@@ -20837,34 +21004,34 @@
           "type": "round_end",
           "round": 5,
           "myTroops": [
-            7698,
-            8889,
+            7534,
+            8732,
             9000
           ],
           "enemyTroops": [
-            1312,
-            6993,
-            6908
+            3414,
+            3837,
+            3976
           ],
           "myWounded": [
-            1043,
-            105,
+            1192,
+            162,
             0
           ],
           "enemyWounded": [
-            5900,
-            1924,
-            1928
+            4229,
+            4519,
+            4265
           ],
           "myDead": [
-            259,
-            6,
+            274,
+            106,
             0
           ],
           "enemyDead": [
-            2788,
-            1083,
-            1164
+            2357,
+            1644,
+            1759
           ]
         },
         {
@@ -20891,11 +21058,11 @@
           "sourceId": "taishici",
           "targetId": "enemy-back",
           "distance": 4,
-          "damage": 513,
+          "damage": 502,
           "breakdown": {
-            "troopBase": 200,
-            "base": 57,
-            "main": 256
+            "troopBase": 198,
+            "base": 49,
+            "main": 255
           },
           "modifiers": {
             "caused": [],
@@ -20910,7 +21077,7 @@
               }
             ]
           },
-          "afterTroops": 6395
+          "afterTroops": 3474
         },
         {
           "type": "unit_act_start",
@@ -20943,12 +21110,12 @@
         {
           "type": "attack_hit",
           "sourceId": "lvmeng",
-          "targetId": "enemy-front",
-          "distance": 3,
-          "damage": 455,
+          "targetId": "enemy-mid",
+          "distance": 4,
+          "damage": 454,
           "breakdown": {
             "troopBase": 201,
-            "base": 39,
+            "base": 38,
             "main": 215
           },
           "modifiers": {
@@ -20956,7 +21123,7 @@
             "taken": [],
             "reduce": [
               {
-                "unitId": "enemy-front",
+                "unitId": "enemy-mid",
                 "skillId": "troop_counter",
                 "skillName": "兵种克制",
                 "rate": 0.3,
@@ -20964,7 +21131,7 @@
               }
             ]
           },
-          "afterTroops": 857
+          "afterTroops": 3383
         },
         {
           "type": "unit_act_end",
@@ -20983,8 +21150,8 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "success": false,
-          "rate": 50,
-          "baseRate": 50,
+          "rate": 35,
+          "baseRate": 35,
           "morale": 100
         },
         {
@@ -20999,18 +21166,18 @@
           "sourceId": "weiyan",
           "targetId": "enemy-mid",
           "distance": 2,
-          "damage": 580,
+          "damage": 578,
           "breakdown": {
-            "troopBase": 186,
-            "base": 62,
-            "main": 332
+            "troopBase": 184,
+            "base": 64,
+            "main": 330
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 6413
+          "afterTroops": 2805
         },
         {
           "type": "unit_act_end",
@@ -21026,20 +21193,20 @@
         {
           "type": "attack_hit",
           "sourceId": "enemy-front",
-          "targetId": "taishici",
-          "distance": 2,
-          "damage": 82,
+          "targetId": "weiyan",
+          "distance": 1,
+          "damage": 210,
           "breakdown": {
-            "troopBase": 37,
-            "base": 18,
-            "main": 27
+            "troopBase": 115,
+            "base": 19,
+            "main": 76
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 8807
+          "afterTroops": 7324
         },
         {
           "type": "unit_act_end",
@@ -21057,18 +21224,18 @@
           "sourceId": "enemy-mid",
           "targetId": "weiyan",
           "distance": 2,
-          "damage": 289,
+          "damage": 190,
           "breakdown": {
-            "troopBase": 169,
-            "base": 21,
-            "main": 99
+            "troopBase": 100,
+            "base": 22,
+            "main": 68
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 7409
+          "afterTroops": 7134
         },
         {
           "type": "unit_act_end",
@@ -21095,34 +21262,34 @@
           "type": "round_end",
           "round": 6,
           "myTroops": [
-            7409,
-            8807,
+            7134,
+            8732,
             9000
           ],
           "enemyTroops": [
-            857,
-            6413,
-            6395
+            3414,
+            2805,
+            3474
           ],
           "myWounded": [
-            1172,
-            168,
+            1404,
+            139,
             0
           ],
           "enemyWounded": [
-            5506,
-            2206,
-            2145
+            3637,
+            4866,
+            4145
           ],
           "myDead": [
-            419,
-            25,
+            462,
+            129,
             0
           ],
           "enemyDead": [
-            3637,
-            1381,
-            1460
+            2949,
+            2329,
+            2381
           ]
         },
         {
@@ -21147,12 +21314,12 @@
         {
           "type": "attack_hit",
           "sourceId": "taishici",
-          "targetId": "enemy-front",
-          "distance": 2,
-          "damage": 512,
+          "targetId": "enemy-back",
+          "distance": 4,
+          "damage": 513,
           "breakdown": {
-            "troopBase": 199,
-            "base": 58,
+            "troopBase": 198,
+            "base": 60,
             "main": 255
           },
           "modifiers": {
@@ -21160,7 +21327,7 @@
             "taken": [],
             "reduce": [
               {
-                "unitId": "enemy-front",
+                "unitId": "enemy-back",
                 "skillId": "troop_counter",
                 "skillName": "兵种克制",
                 "rate": 0.3,
@@ -21168,7 +21335,7 @@
               }
             ]
           },
-          "afterTroops": 345
+          "afterTroops": 2961
         },
         {
           "type": "unit_act_start",
@@ -21182,10 +21349,58 @@
           "unitId": "taishici",
           "skillId": "fangzhen_tuji",
           "skillName": "方阵突击",
-          "success": false,
+          "success": true,
           "rate": 30,
           "baseRate": 30,
           "morale": 100
+        },
+        {
+          "type": "skill_target",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "targetIds": [
+            "enemy-back"
+          ]
+        },
+        {
+          "type": "skill_cast",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击"
+        },
+        {
+          "type": "damage",
+          "sourceId": "taishici",
+          "targetId": "enemy-back",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击",
+          "damageType": "physical",
+          "damage": 828,
+          "breakdown": {
+            "troopBase": 198,
+            "base": 120,
+            "main": 510
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-back",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 2133
+        },
+        {
+          "type": "status_inflicted",
+          "unitId": "enemy-back",
+          "statusType": "confusion",
+          "detail": "混乱 1 回合"
         },
         {
           "type": "unit_act_end",
@@ -21201,12 +21416,12 @@
         {
           "type": "attack_hit",
           "sourceId": "lvmeng",
-          "targetId": "enemy-front",
-          "distance": 3,
-          "damage": 345,
+          "targetId": "enemy-mid",
+          "distance": 4,
+          "damage": 454,
           "breakdown": {
             "troopBase": 201,
-            "base": 34,
+            "base": 38,
             "main": 215
           },
           "modifiers": {
@@ -21214,7 +21429,7 @@
             "taken": [],
             "reduce": [
               {
-                "unitId": "enemy-front",
+                "unitId": "enemy-mid",
                 "skillId": "troop_counter",
                 "skillName": "兵种克制",
                 "rate": 0.3,
@@ -21222,13 +21437,7 @@
               }
             ]
           },
-          "afterTroops": 0
-        },
-        {
-          "type": "unit_dead",
-          "unitId": "enemy-front",
-          "name": "木桩前锋",
-          "side": "enemy"
+          "afterTroops": 2351
         },
         {
           "type": "unit_act_end",
@@ -21247,8 +21456,8 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "success": true,
-          "rate": 55,
-          "baseRate": 55,
+          "rate": 40,
+          "baseRate": 40,
           "morale": 100
         },
         {
@@ -21274,18 +21483,18 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "damageType": "physical",
-          "damage": 915,
+          "damage": 900,
           "breakdown": {
-            "troopBase": 183,
-            "base": 142,
-            "main": 590
+            "troopBase": 179,
+            "base": 138,
+            "main": 583
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 5498
+          "afterTroops": 1451
         },
         {
           "type": "damage",
@@ -21294,18 +21503,18 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "damageType": "physical",
-          "damage": 911,
+          "damage": 874,
           "breakdown": {
-            "troopBase": 183,
-            "base": 138,
-            "main": 590
+            "troopBase": 179,
+            "base": 112,
+            "main": 583
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 5484
+          "afterTroops": 1259
         },
         {
           "type": "damage",
@@ -21315,11 +21524,11 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "damageType": "physical",
-          "damage": 707,
+          "damage": 712,
           "breakdown": {
-            "troopBase": 199,
-            "base": 97,
-            "main": 411
+            "troopBase": 198,
+            "base": 96,
+            "main": 418
           },
           "modifiers": {
             "caused": [],
@@ -21334,7 +21543,7 @@
               }
             ]
           },
-          "afterTroops": 4791
+          "afterTroops": 739
         },
         {
           "type": "damage",
@@ -21344,11 +21553,11 @@
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
           "damageType": "physical",
-          "damage": 691,
+          "damage": 715,
           "breakdown": {
-            "troopBase": 199,
-            "base": 81,
-            "main": 411
+            "troopBase": 198,
+            "base": 99,
+            "main": 418
           },
           "modifiers": {
             "caused": [],
@@ -21363,7 +21572,7 @@
               }
             ]
           },
-          "afterTroops": 4793
+          "afterTroops": 544
         },
         {
           "type": "unit_act_start",
@@ -21375,24 +21584,53 @@
         {
           "type": "attack_hit",
           "sourceId": "weiyan",
-          "targetId": "enemy-back",
-          "distance": 2,
-          "damage": 592,
+          "targetId": "enemy-front",
+          "distance": 1,
+          "damage": 575,
           "breakdown": {
-            "troopBase": 183,
-            "base": 81,
-            "main": 328
+            "troopBase": 179,
+            "base": 72,
+            "main": 324
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 4201
+          "afterTroops": 2839
         },
         {
           "type": "unit_act_end",
           "unitId": "weiyan"
+        },
+        {
+          "type": "unit_act_start",
+          "unitId": "enemy-front",
+          "name": "木桩前锋",
+          "position": "前锋",
+          "phase": "normal_attack"
+        },
+        {
+          "type": "attack_hit",
+          "sourceId": "enemy-front",
+          "targetId": "taishici",
+          "distance": 2,
+          "damage": 179,
+          "breakdown": {
+            "troopBase": 100,
+            "base": 19,
+            "main": 60
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 8553
+        },
+        {
+          "type": "unit_act_end",
+          "unitId": "enemy-front"
         },
         {
           "type": "unit_act_start",
@@ -21405,48 +21643,29 @@
           "type": "attack_hit",
           "sourceId": "enemy-mid",
           "targetId": "weiyan",
-          "distance": 1,
-          "damage": 251,
+          "distance": 2,
+          "damage": 79,
           "breakdown": {
-            "troopBase": 143,
-            "base": 20,
-            "main": 88
+            "troopBase": 33,
+            "base": 19,
+            "main": 27
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 7158
+          "afterTroops": 7055
         },
         {
           "type": "unit_act_end",
           "unitId": "enemy-mid"
         },
         {
-          "type": "unit_act_start",
+          "type": "no_attack_target",
           "unitId": "enemy-back",
           "name": "木桩大营",
-          "position": "大营",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-back",
-          "targetId": "weiyan",
-          "distance": 2,
-          "damage": 233,
-          "breakdown": {
-            "troopBase": 132,
-            "base": 18,
-            "main": 83
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 6925
+          "reason": "混乱：无法行动"
         },
         {
           "type": "unit_act_end",
@@ -21456,34 +21675,34 @@
           "type": "round_end",
           "round": 7,
           "myTroops": [
-            6925,
-            8807,
+            7055,
+            8553,
             9000
           ],
           "enemyTroops": [
-            0,
-            4791,
-            4201
+            2839,
+            739,
+            544
           ],
           "myWounded": [
-            1467,
-            144,
+            1282,
+            290,
             0
           ],
           "enemyWounded": [
-            5549,
-            3438,
-            3928
+            3674,
+            6147,
+            6348
           ],
           "myDead": [
-            608,
-            49,
+            663,
+            157,
             0
           ],
           "enemyDead": [
-            4451,
-            1771,
-            1871
+            3487,
+            3114,
+            3108
           ]
         },
         {
@@ -21493,6 +21712,7 @@
             "taishici",
             "lvmeng",
             "weiyan",
+            "enemy-front",
             "enemy-mid",
             "enemy-back"
           ]
@@ -21507,20 +21727,20 @@
         {
           "type": "attack_hit",
           "sourceId": "taishici",
-          "targetId": "enemy-back",
+          "targetId": "enemy-mid",
           "distance": 3,
-          "damage": 512,
+          "damage": 509,
           "breakdown": {
-            "troopBase": 199,
-            "base": 58,
-            "main": 255
+            "troopBase": 196,
+            "base": 60,
+            "main": 253
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": [
               {
-                "unitId": "enemy-back",
+                "unitId": "enemy-mid",
                 "skillId": "troop_counter",
                 "skillName": "兵种克制",
                 "rate": 0.3,
@@ -21528,7 +21748,7 @@
               }
             ]
           },
-          "afterTroops": 3689
+          "afterTroops": 230
         },
         {
           "type": "unit_act_start",
@@ -21542,10 +21762,58 @@
           "unitId": "taishici",
           "skillId": "fangzhen_tuji",
           "skillName": "方阵突击",
-          "success": false,
+          "success": true,
           "rate": 30,
           "baseRate": 30,
           "morale": 100
+        },
+        {
+          "type": "skill_target",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "targetIds": [
+            "enemy-mid"
+          ]
+        },
+        {
+          "type": "skill_cast",
+          "unitId": "taishici",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击"
+        },
+        {
+          "type": "damage",
+          "sourceId": "taishici",
+          "targetId": "enemy-mid",
+          "skillId": "fangzhen_tuji",
+          "skillName": "方阵突击",
+          "damageType": "physical",
+          "damage": 230,
+          "breakdown": {
+            "troopBase": 196,
+            "base": 107,
+            "main": 507
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": [
+              {
+                "unitId": "enemy-mid",
+                "skillId": "troop_counter",
+                "skillName": "兵种克制",
+                "rate": 0.3,
+                "direction": "reduce"
+              }
+            ]
+          },
+          "afterTroops": 0
+        },
+        {
+          "type": "unit_dead",
+          "unitId": "enemy-mid",
+          "name": "木桩中军",
+          "side": "enemy"
         },
         {
           "type": "unit_act_end",
@@ -21561,12 +21829,12 @@
         {
           "type": "attack_hit",
           "sourceId": "lvmeng",
-          "targetId": "enemy-mid",
-          "distance": 3,
-          "damage": 456,
+          "targetId": "enemy-back",
+          "distance": 4,
+          "damage": 459,
           "breakdown": {
             "troopBase": 201,
-            "base": 40,
+            "base": 43,
             "main": 215
           },
           "modifiers": {
@@ -21574,7 +21842,7 @@
             "taken": [],
             "reduce": [
               {
-                "unitId": "enemy-mid",
+                "unitId": "enemy-back",
                 "skillId": "troop_counter",
                 "skillName": "兵种克制",
                 "rate": 0.3,
@@ -21582,7 +21850,7 @@
               }
             ]
           },
-          "afterTroops": 4335
+          "afterTroops": 85
         },
         {
           "type": "unit_act_end",
@@ -21600,10 +21868,52 @@
           "unitId": "weiyan",
           "skillId": "qibing_jubei",
           "skillName": "奇兵拒北",
-          "success": false,
+          "success": true,
           "rate": 30,
           "baseRate": 30,
           "morale": 100
+        },
+        {
+          "type": "skill_target",
+          "unitId": "weiyan",
+          "skillId": "qibing_jubei",
+          "targetIds": [
+            "enemy-front",
+            "enemy-mid",
+            "enemy-back"
+          ]
+        },
+        {
+          "type": "skill_cast",
+          "unitId": "weiyan",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北"
+        },
+        {
+          "type": "damage",
+          "sourceId": "weiyan",
+          "targetId": "enemy-back",
+          "skillId": "qibing_jubei",
+          "skillName": "奇兵拒北",
+          "damageType": "physical",
+          "damage": 85,
+          "breakdown": {
+            "troopBase": 178,
+            "base": 130,
+            "main": 581
+          },
+          "modifiers": {
+            "caused": [],
+            "taken": [],
+            "reduce": []
+          },
+          "afterTroops": 0
+        },
+        {
+          "type": "unit_dead",
+          "unitId": "enemy-back",
+          "name": "木桩大营",
+          "side": "enemy"
         },
         {
           "type": "unit_act_start",
@@ -21615,130 +21925,72 @@
         {
           "type": "attack_hit",
           "sourceId": "weiyan",
-          "targetId": "enemy-mid",
+          "targetId": "enemy-front",
           "distance": 1,
-          "damage": 562,
+          "damage": 578,
           "breakdown": {
-            "troopBase": 177,
-            "base": 64,
-            "main": 321
+            "troopBase": 178,
+            "base": 77,
+            "main": 323
           },
           "modifiers": {
             "caused": [],
             "taken": [],
             "reduce": []
           },
-          "afterTroops": 3773
+          "afterTroops": 2261
         },
         {
           "type": "unit_act_end",
           "unitId": "weiyan"
         },
         {
-          "type": "unit_act_start",
-          "unitId": "enemy-mid",
-          "name": "木桩中军",
-          "position": "中军",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-mid",
-          "targetId": "weiyan",
-          "distance": 1,
-          "damage": 224,
-          "breakdown": {
-            "troopBase": 123,
-            "base": 22,
-            "main": 79
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 6701
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-mid"
-        },
-        {
-          "type": "unit_act_start",
-          "unitId": "enemy-back",
-          "name": "木桩大营",
-          "position": "大营",
-          "phase": "normal_attack"
-        },
-        {
-          "type": "attack_hit",
-          "sourceId": "enemy-back",
-          "targetId": "weiyan",
-          "distance": 2,
-          "damage": 219,
-          "breakdown": {
-            "troopBase": 121,
-            "base": 19,
-            "main": 79
-          },
-          "modifiers": {
-            "caused": [],
-            "taken": [],
-            "reduce": []
-          },
-          "afterTroops": 6482
-        },
-        {
-          "type": "unit_act_end",
-          "unitId": "enemy-back"
-        },
-        {
           "type": "round_end",
           "round": 8,
           "myTroops": [
-            6482,
-            8807,
+            7055,
+            8553,
             9000
           ],
           "enemyTroops": [
+            2261,
             0,
-            3773,
-            3689
+            0
           ],
           "myWounded": [
-            1683,
-            124,
+            1103,
+            249,
             0
           ],
           "enemyWounded": [
-            4772,
-            3924,
-            3864
+            3709,
+            5988,
+            5976
           ],
           "myDead": [
-            835,
-            69,
+            842,
+            198,
             0
           ],
           "enemyDead": [
-            5228,
-            2303,
-            2447
+            4030,
+            4012,
+            4024
           ]
         },
         {
           "type": "battle_end",
-          "result": "draw",
+          "result": "win",
           "rounds": 8,
           "myTroops": [
-            6482,
-            8807,
+            7055,
+            8553,
             9000
           ],
           "enemyTroops": [
+            2261,
             0,
-            3773,
-            3689
+            0
           ]
         }
       ]
