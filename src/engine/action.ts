@@ -2429,7 +2429,9 @@ export function dealDotDamage(
     const capped = applyTroopCap(dot.stored.damage, unit.troops);
     ctx.events.push({
       type: 'dot_tick',
-      sourceId: unit.general.id,
+      // sourceId = 伤害归属者（施法者）；施法者不可解析时才退回受击者自身。
+      // `targetId` 恒为受击者 —— 与 damage / attack_hit 的口径一致（见 annotateAfterTroops）。
+      sourceId: src?.general.id ?? unit.general.id,
       targetId: unit.general.id,
       dotType: dot.type,
       skillId: dot.sourceSkillId,
@@ -2447,36 +2449,53 @@ export function dealDotDamage(
     applyDotTickExtras(ctx, unit, dot);
     return;
   }
-  // 回退：实时结算（无挂上时冻结上下文）
-  const atk = effectiveStat(unit, 'attack');
-  const def = effectiveStat(unit, 'defense');
-  const strat = effectiveStat(unit, 'strategy');
-  const { damage, breakdown } = calcDamage(
-    {
-      damageType: 'strategy',
-      rate: dot.rate,
-      attackerAttack: atk,
-      attackerStrategy: dot.sourceStrategy,
-      attackerTroops: unit.troops,
-      targetDefense: def,
-      targetStrategy: strat,
-      mult: buffMult(1, 1, sumRates(unit.statuses, 'damage_reduce')), // 无增伤（施法者不可解析）；减伤并入单一总和
-      isDot: true, // 妖术/燃烧/恐慌：兵力基础 ×1/3、谋略基础 ×0.25
-    },
-    ctx.rng
-  );
-  const capped = applyTroopCap(damage, unit.troops);
-  // 回退路径不携带增减伤提升，只带受击方减伤来源
-  const fbMods = collectDamageModifiers(ctx, unit, unit, false);
+  // 回退：实时结算（挂上时施法者不可解析、没有冻结上下文）。此刻若能解析到施法者，
+  // 就按与「挂上时冻结」完全相同的口径结算（**施法者兵力** + 挂上时的增伤/减伤合计）；
+  // 否则退回携带者自身的旧口径（直调 `inflictStatus` 且无 casterId 的单元测试路径）。
+  const fb = src
+    ? computeDotTickDamage(ctx, src, unit, {
+        rate: dot.rate,
+        sourceStrategy: dot.sourceStrategy ?? effectiveStat(src, 'strategy'),
+        sourceSkillId: dot.sourceSkillId,
+        dotType: dot.type,
+      })
+    : (() => {
+        const atk = effectiveStat(unit, 'attack');
+        const def = effectiveStat(unit, 'defense');
+        const strat = effectiveStat(unit, 'strategy');
+        const r = calcDamage(
+          {
+            damageType: 'strategy',
+            rate: dot.rate,
+            attackerAttack: atk,
+            attackerStrategy: dot.sourceStrategy,
+            attackerTroops: unit.troops,
+            targetDefense: def,
+            targetStrategy: strat,
+            mult: buffMult(1, 1, sumRates(unit.statuses, 'damage_reduce')), // 施法者不可解析：无增伤，仅受击方减伤
+            isDot: true, // 妖术/燃烧/恐慌：兵力基础 ×1/3、谋略基础 ×0.25
+          },
+          ctx.rng
+        );
+        return {
+          damage: r.damage,
+          breakdown: r.breakdown,
+          modifiers: collectDamageModifiers(ctx, unit, unit, false),
+        };
+      })();
+  const capped = applyTroopCap(fb.damage, unit.troops);
+  const fbMods = fb.modifiers;
   ctx.events.push({
     type: 'dot_tick',
-    sourceId: unit.general.id,
+    // sourceId = 伤害归属者（施法者）；施法者不可解析时才退回受击者自身。
+    // `targetId` 恒为受击者 —— 与 damage / attack_hit 的口径一致（见 annotateAfterTroops）。
+    sourceId: src?.general.id ?? unit.general.id,
     targetId: unit.general.id,
     dotType: dot.type,
     skillId: dot.sourceSkillId,
     casterId: dot.sourceUnitId ?? '',
     damage: capped,
-    breakdown,
+    breakdown: fb.breakdown,
     modifiers: fbMods,
   });
   applyDamage(ctx, unit, capped, src, 'strategy', 'skill', fbMods, dotHit);
@@ -4544,20 +4563,28 @@ function pushStatus(
     // damage_boost 用百分数 + 语义化（0.08 → 「造成的伤害提高8%」；≤ -90% → 「造成的伤害大幅降低」）
     const durText = create.duration >= 999 ? '持续至战斗结束' : `持续 ${create.duration} 回合`;
     let detail: string;
+    // 伤害类型限定词（照官方措辞切）：physical →「攻击」、strategy →「策略攻击」、无限定 → 空。
+    // 依据官方战法库措辞分布：造成的伤害提高 21 条 / 攻击伤害提高 5 / 策略伤害提高 1。
+    const majorWord =
+      ('damageType' in create ? create.damageType : undefined) === 'physical'
+        ? '攻击'
+        : ('damageType' in create ? create.damageType : undefined) === 'strategy'
+          ? '策略攻击'
+          : '';
     if (type === 'damage_boost' && 'decayEighths' in create && create.decayEighths) {
       const pct = Math.round(Math.abs(create.rate) * 100);
       const dirName = (create.direction ?? 'taken') === 'caused' ? '造成的' : '受到的';
-      detail = `${dirName}伤害${create.rate >= 0 ? '提高' : '降低'} ${pct}% 剩余 ${create.decayEighths}/8 ${durText}`;
+      detail = `${dirName}${majorWord}伤害${create.rate >= 0 ? '提高' : '降低'} ${pct}% 剩余 ${create.decayEighths}/8 ${durText}`;
     } else if (type === 'damage_boost' && 'decayFifths' in create && create.decayFifths) {
       const pct = Math.round(Math.abs(create.rate) * 100);
       const dirName = (create.direction ?? 'taken') === 'caused' ? '造成的' : '受到的';
-      detail = `${dirName}伤害${create.rate >= 0 ? '提高' : '降低'} ${pct}% 剩余 ${create.decayFifths}/${create.decayFifths} ${durText}`;
+      detail = `${dirName}${majorWord}伤害${create.rate >= 0 ? '提高' : '降低'} ${pct}% 剩余 ${create.decayFifths}/${create.decayFifths} ${durText}`;
     } else if (type === 'damage_boost') {
       const pct = Math.round(Math.abs(create.rate) * 100);
       const dirName = (create.direction ?? 'taken') === 'caused' ? '造成的' : '受到的';
       const verb = create.rate < 0 && pct > 90 ? '大幅降低' : `${create.rate >= 0 ? '提高' : '降低'} ${pct}%`;
       const once = 'charges' in create && create.charges ? '下一次' : '';
-      detail = `${once}${dirName}伤害${verb} ${'charges' in create && create.charges ? '' : durText}`.trim();
+      detail = `${once}${dirName}${majorWord}伤害${verb} ${'charges' in create && create.charges ? '' : durText}`.trim();
     } else if (type === 'trigger_boost') {
       const pct = Math.round(create.rate * 100);
       const pursuitOnly =
@@ -8193,7 +8220,9 @@ function executeSkillOutputs(
             });
             applyDamage(ctx, t, capped, stratActor, 'strategy', 'skill', stratMods, { skillType: skill.type });
             // 其徐如林：本侧施加的策略伤害生效后，对目标同侧相邻敌军额外造成一次策略伤害（原伤害率 × 比例）
-            if (capped > 0) triggerStrategyAdjacentBonus(ctx, caster, t, rate);
+            // 代打段（recipient / highest_strategy_ally）由**实际出手的那名友军**口径结算
+            // （否则溅射会错用施法者的兵力/谋略/增减伤；非代打路径仍传 caster，零回归）
+            if (capped > 0) triggerStrategyAdjacentBonus(ctx, out.attacker ? stratActor : caster, t, rate);
           }
           if (foePool.some((t) => t.alive)) consumeAttackCharges(ctx, stratActor, { damageSource: 'skill', damageType: 'strategy', skillType: skill.type });
         }
