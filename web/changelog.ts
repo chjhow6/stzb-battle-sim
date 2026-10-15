@@ -45,6 +45,22 @@ export const ANNOUNCE_ON_FIRST_RUN = false;
 /** 版本倒序：**第一项 = 当前主站版本** */
 export const ANNOUNCEMENTS: Announcement[] = [
   {
+    version: '1.7',
+    date: '2026-10-15',
+    title: '修复「久战熟谋」的谋略加成没有生效',
+    summary:
+      '「久战熟谋」的每层增益之前一直按基础值 5% 计算，没有随携带者的谋略提高。修好后它会正常随谋略增长。',
+    groups: [
+      {
+        kind: '修复',
+        items: [
+          '「久战熟谋」每层的策略伤害提高现在随携带者的谋略属性增长，在此之前它恒定为基础值 5%。',
+        ],
+      },
+    ],
+  },
+
+  {
     version: '1.6',
     date: '2026-10-15',
     title: '按游戏内实际数值校正一批战法的距离与发动率',

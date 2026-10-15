@@ -1014,7 +1014,7 @@ export function triggerCommandSkills(ctx: CombatContext, unit: UnitState): void 
           // 注：`endRound` / `requireMoraleBelow` 只在**触发时**过滤（窗口内首次造成伤害才叠层），
           // 准备阶段仍挂"跟踪状态"——否则士气后续降回门槛内时无状态可回溯、整段失效。
           // `initialStatus`（缺省 = status）：跟踪状态本身不该有效果时用（悬权而动挂 amount 0）。
-          inflictStatus(ctx, t, cfg.initialStatus ?? cfg.status, skill.type, skill.id, unit.general.id);
+          inflictStatus(ctx, t, scaleDirectStatus(cfg.initialStatus ?? cfg.status, unit), skill.type, skill.id, unit.general.id);
         }
       }
     }
@@ -6965,6 +6965,43 @@ function triggerDealFirstPerRound(ctx: CombatContext, source: UnitState, target:
 }
 
 /**
+ * 直调 `inflictStatus` 路径的 status 也要按属性缩放。
+ *
+ * `executeSkillOutputs` 会在结算前统一做缩放；但少数机制（如 `allyDealStack`）直接把
+ * status 定义交给 `inflictStatus`，绕过了那条通道 ⇒ 带 `growthRate` 的段不会生效。
+ * 这里补上同一套口径：
+ *   - rate 走 `roundRate(scaledValue(rate * 100, growthRate, attr)) / 100`（与 executeSkillOutputs
+ *     的小数 rate 分支同口径；百分比数值口径的段由调用方保证量纲）
+ *   - 点数类 amount → 四舍五入（同 executeSkillOutputs 的 attr 分支）
+ * 缩放标记沿用既有约定：必须显式给 `strategyScaled` / `attackScaled` / … 之一才缩放。
+ */
+function scaleDirectStatus(create: CreateStatus, caster: UnitState): CreateStatus {
+  const c = create as unknown as Record<string, unknown>;
+  if (c.growthRate === undefined) return create;
+  if (!c.attackScaled && !c.defenseScaled && !c.speedScaled && !c.strategyScaled) return create;
+  const attrKind: 'attack' | 'defense' | 'speed' | 'strategy' = c.attackScaled
+    ? 'attack'
+    : c.defenseScaled
+      ? 'defense'
+      : c.speedScaled
+        ? 'speed'
+        : 'strategy';
+  const attr = effectiveStat(caster, attrKind);
+  const growth = c.growthRate as number;
+  if (typeof c.rate === 'number') {
+    return {
+      ...create,
+      rate: roundRate(scaledValue(c.rate * 100, growth, attr)) / 100,
+    } as unknown as CreateStatus;
+  }
+  if (typeof c.amount === 'number') {
+    const scaled = scaledValue(Math.abs(c.amount), growth, attr);
+    return { ...create, amount: Math.round(scaled) * Math.sign(c.amount) } as unknown as CreateStatus;
+  }
+  return create;
+}
+
+/**
  * 友军「造成匹配伤害后叠层」（久战熟谋）：持有者每次造成匹配伤害（实际扣兵 > 0）后，
  * 把「挂在其身上、来源战法带 `allyDealStack`」的状态**同源再施加一次**（叠层与上限由状态自身 `maxStacks` 控制）。
  * 注意：状态挂在**友军**身上，而战法由指挥携带者持有——故按「持有者身上的状态 → 来源战法」回溯，
@@ -7006,7 +7043,9 @@ function triggerAllyDealStack(ctx: CombatContext, source: UnitState, damageType?
         });
         if (!success) continue;
       }
-      inflictStatus(ctx, source, cfg.status, skill.type, skill.id, casterId);
+      // 直调路径补缩放：施法者取原施加者（sourceUnitId），取不到时退回携带者
+      const scaleOwner = casterId ? castUnit(ctx, casterId) : undefined;
+      inflictStatus(ctx, source, scaleDirectStatus(cfg.status, scaleOwner ?? source), skill.type, skill.id, casterId);
       if (!source.alive) return;
     }
   }
