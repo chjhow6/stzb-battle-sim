@@ -1608,7 +1608,31 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
       { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.25, duration: 2 }, target: 'self' },
     ],
   },
-  /** 西乡武功（朱儁主战法·一类指挥）：战斗前 2 回合，使我军群体每回合优先行动，并在第 2 回合行动前对敌军群体 2 目标发动一次策略攻击 191%（受谋略）。「下一次受到的伤害大幅降低」暂未建模 */
+  /**
+   * 西乡武功（SP朱儁·汉弓 h553 主战法·指挥 A）：距离 2，我军群体（有效距离内 2 个目标），兵种弓。
+   * 满级「战斗前2回合，使我军群体每回合都能优先行动，并使其在第2回合行动前对距离4以内的敌军群体
+   *   2人发动一次策略攻击（伤害率191.0%，受谋略属性影响），且下一次受到的伤害大幅降低」；1 级 95.5%。
+   * 官方：scripts/skill_extra.json id 200791（指挥 / 距离 2 / 我军群体（有效距离内2个目标）/ 弓）。
+   * 成长率：伤害率 191 → **2.075**（dateyuan/谋略战法受谋略成长调研.md §6.2 已确认）。
+   *
+   * 口径（2026-10-15 用户实测口径修正）：
+   *   ① 「**使其**在第2回合行动前…发动一次策略攻击」= 由**被锁定的我军群体各自出手**，每名武将按
+   *      **自身**谋略/兵力/增减伤结算 → `strategy_damage.attacker:'recipient'`（守静却敌 XP蒋琬先例）。
+   *      旧实现由朱儁自己打出 ⇒ 「效果未调动队友」（用户报告口径）。
+   *   ② 「第2回合行动前」= `delayedOutputs[{atRound:2}]`（**不预存**、回合开始实时结算；
+   *      匠心不竭 / 守静却敌先例）。旧实现走 `delayedOutput`（准备阶段预存伤害）⇒ 不带增减伤归因、
+   *      也不触发「我军全体施加的策略伤害生效时对相邻敌军溅射」的光环（其徐如林）——用户报告的第 1 条同源。
+   *   ③ 「使我军群体每回合都能优先行动」= 准备阶段给锁定目标挂 `priority`（duration 2 = 第 1~2 回合）；
+   *      朱儁自身的 `priorityRounds: 2` 保留（既有口径）。⚠️ 推定：锁定 2 人未含朱儁时他仍先手。
+   *   ④ 伤害段的「距离4以内」用**段级** `range: 4`（战法自身距离 2 是选我军群体用的）。
+   *   ⑤ 「且下一次受到的伤害大幅降低」= **攻击 / 策略两条次数型减伤，各 1 次、各降 90%**：
+   *      官方效果组子技能（本战法 id + 10000）里两条槽位各一条 —— effect 522 受到攻击伤害降低、
+   *      524 受到策略攻击伤害降低，取值同为 90.0（同值 ⇒ 无属性缩放，两条轨数值相同），
+   *      对应官方文案「且下一次受到的伤害大幅降低」；落在被锁定的我军群体身上。
+   *      引擎件 `damage_reduce.charges`（磐阵善守「受到首次攻击/策略攻击」同口径先例，两条独立轨）。
+   *      ⚠️ 全文案未写「攻击/策略」分轨（只说「下一次受到的伤害」）——此处按包内两条同值槽位与磐阵善守
+   *      同款结构落成两条轨；若要改成「一次任意类型」口径，即把两条合并成一条不带 `damageType` 的。
+   */
   xixiang_wugong: {
     id: 'xixiang_wugong',
     name: '西乡武功',
@@ -1617,14 +1641,34 @@ export const SKILL_REGISTRY: Record<string, Skill> = {
     range: 2,
     triggerRate: 1,
     targetMode: 'group',
+    groupCount: 2,
     targetSide: 'ally',
     retainAfterDeath: true,
     priorityRounds: 2,
-    delayedOutput: {
-      atRound: 2,
-      targetMode: 'group',
-      output: [{ kind: 'strategy_damage', rate: 191, strategyScaled: true, growthRate: 2.075 }],
-    },
+    // ③ 我军群体第 1~2 回合优先行动 + ⑤ 「下一次受到的伤害大幅降低」（攻击 / 策略两条轨，各 1 次）
+    initialOutput: [
+      { kind: 'inflict_status', status: { type: 'priority', duration: 2 } },
+      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.9, duration: 999, damageType: 'physical', charges: 1 } },
+      { kind: 'inflict_status', status: { type: 'damage_reduce', rate: 0.9, duration: 999, damageType: 'strategy', charges: 1 } },
+    ],
+    // ①② 第 2 回合行动前：我军群体各自对距离 4 以内的敌军群体 2 人发动一次策略攻击（实时结算）
+    delayedOutputs: [
+      {
+        atRound: 2,
+        output: [
+          {
+            kind: 'strategy_damage',
+            rate: 191,
+            strategyScaled: true,
+            growthRate: 2.075,
+            attacker: 'recipient',
+            targetMode: 'group',
+            groupCount: 2,
+            range: 4,
+          },
+        ],
+      },
+    ],
     tags: ['damage'],
     output: [],
   },
